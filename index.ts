@@ -68,6 +68,8 @@ function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
+	let [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
+
 	let mainContent = document.getElementById('main-content');
 	let domainTabContent = document.getElementById('domain-tab-content');
 	let domainTabHeader = document.getElementById('domain-tab-header');
@@ -76,9 +78,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 	let domainList = document.getElementById('domain-list');
 	let btnMergeAll = document.getElementById('btn-merge-all');
 	let btnRemoveDupes = document.getElementById('btn-remove-dupes');
-
-	let tabs = await getAllTabs();
-	let currentWindow = await getCurrentWindow();
 
 	btnMergeAll.addEventListener('click', () => {
 		mergeAllWindows(currentWindow, tabs);
