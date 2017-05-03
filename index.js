@@ -112,10 +112,9 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
         let text = document.createElement('span');
         text.textContent = h;
         let small = document.createElement('small');
-        small.textContent = hosts[h].count.toString();
+        small.textContent = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : hosts[h].tabs[0].title;
         let fav = document.createElement('img');
         fav.src = hosts[h].favicon || 'icon.png';
-        fav.width = 16;
         let closeBtn = imgbtn("x.png");
         wrap.appendChild(fav);
         wrap.appendChild(text);
@@ -135,7 +134,7 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
                 window.close();
             }
             else {
-                mainContent.innerHTML = '';
+                mainContent.style.display = 'none';
                 domainTabContent.style.display = '';
                 domainTabHeader.textContent = h;
                 for (let domainTab of domainTabs) {
@@ -143,7 +142,10 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
                     let wrap = document.createElement('div');
                     let text = document.createElement('span');
                     text.textContent = domainTab.title;
+                    let fav = document.createElement('img');
+                    fav.src = hosts[h].favicon || 'icon.png';
                     let closeBtn = imgbtn("x.png");
+                    wrap.appendChild(fav);
                     wrap.appendChild(text);
                     dli.appendChild(wrap);
                     dli.appendChild(closeBtn);

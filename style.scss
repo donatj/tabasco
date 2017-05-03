@@ -25,7 +25,7 @@ header {
 
 %list {
 	li {
-		line-height: 25px;
+		line-height: 1.1em;
 		display: block;
 		border-bottom: 1px solid rgb(204, 204, 204);
 		padding: 2px 4px;
@@ -48,7 +48,10 @@ header {
 		
 		> div {
 			padding: 2px 4px;
-			flex: 1;
+			flex: 2;
+
+			display: flex;
+			align-items: center;
 
 			> img, span {
 				display: inline-block;
@@ -56,15 +59,21 @@ header {
 
 			> span {
 				word-break: break-word;
+				flex: 1;
 			}
 
 			> img {
 				vertical-align: middle;
 				margin: 3px 5px 3px;
+				width: 16px;
+				height: 16px;
 			}
 
 			> small {
-				float: right;
+				flex: 1;
+				word-break: break-word;
+				text-align: right;
+				padding-left: 10px;
 			}
 		}
 
