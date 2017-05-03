@@ -32,8 +32,6 @@ header {
 
 #domain-list li > img, #domain-tab-content li > img, #domain-list li span, #domain-tab-content li span {
   display: inline-block; }
-#domain-list li > span, #domain-tab-content li > span {
-  max-width: 230px; }
 #domain-list li > img, #domain-tab-content li > img {
   vertical-align: middle;
   margin: 3px 5px 3px; }

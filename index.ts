@@ -1,23 +1,8 @@
-function mergeAllWindows(w: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
-	for (let t of tabs) {
-		if (w.id == t.windowId) {
-			continue;
-		}
-
-		chrome.tabs.move(t.id, { "windowId": w.id, "index": -1 });
-
-		if (t.pinned) {
-			chrome.tabs.update(t.id, { "pinned": true });
-		}
-	}
-}
-
 function getAllTabs(): Promise<chrome.tabs.Tab[]> {
 	let tabs: chrome.tabs.Tab[] = [];
 
 	return new Promise(resolve => {
 		chrome.windows.getAll({ "populate": true }, (windows) => {
-			let urls: { [key: string]: chrome.tabs.Tab; } = {}
 			for (let w of windows) {
 				for (let t of w.tabs) {
 					tabs.push(t)
@@ -35,6 +20,20 @@ function getCurrentWindow(): Promise<chrome.windows.Window> {
 	});
 }
 
+function mergeAllWindows(w: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
+	for (let t of tabs) {
+		if (w.id == t.windowId) {
+			continue;
+		}
+
+		chrome.tabs.move(t.id, { "windowId": w.id, "index": -1 });
+
+		if (t.pinned) {
+			chrome.tabs.update(t.id, { "pinned": true });
+		}
+	}
+}
+
 function removeDupes(tabs: chrome.tabs.Tab[]) {
 	let urls: string[] = [];
 	for (let t of tabs) {
@@ -46,7 +45,7 @@ function removeDupes(tabs: chrome.tabs.Tab[]) {
 		}
 
 		if (urls.indexOf(t.url) > -1) {
-			chrome.tabs.remove(t.id);
+			closeTabs(t);
 		} else {
 			urls.push(t.url);
 		}
@@ -56,6 +55,16 @@ function removeDupes(tabs: chrome.tabs.Tab[]) {
 function focusTab(tab: chrome.tabs.Tab) {
 	chrome.tabs.update(tab.id, { selected: true });
 	chrome.windows.update(tab.windowId, { focused: true });
+}
+
+function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
+	if(!Array.isArray(tabs)) {
+		tabs = [tabs];
+	}
+	
+	for(let t of tabs) {
+		chrome.tabs.remove(t.id)
+	}
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
@@ -139,11 +148,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 		domainList.appendChild(dli);
 
-		closeBtn.addEventListener('click', () => {
-			for (let t of hosts[h].tabs) {
-				chrome.tabs.remove(t.id);
-			}
-			window.close();
+		closeBtn.addEventListener('click', (e) => {
+			e.stopPropagation();
+			closeTabs(hosts[h].tabs);
 		});
 
 		dli.addEventListener('click', () => {
@@ -157,18 +164,24 @@ document.addEventListener('DOMContentLoaded', async () => {
 				domainTabContent.style.display = '';
 				domainTabHeader.textContent = h;
 
-				for (let t of domainTabs) {
+				for (let domainTab of domainTabs) {
 					let dli = document.createElement('li');
 					let text = document.createElement('span');
-					text.textContent = t.title;
+					text.textContent = domainTab.title;
 
 					let closeBtn = imgbtn("x.png");
 
 					dli.appendChild(text);
 					dli.appendChild(closeBtn);
 
+					closeBtn.addEventListener('click', (e) => {
+						e.stopPropagation();
+						closeTabs(domainTab);
+						dli.remove();
+					});
+
 					dli.addEventListener('click', () => {
-						focusTab(t);
+						focusTab(domainTab);
 						window.close();
 					});
 

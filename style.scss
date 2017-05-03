@@ -47,12 +47,13 @@ header {
 			display: inline-block;
 		}
 
-		> span {
-			max-width: 230px;
-			// white-space: nowrap;
-			// overflow: hidden;
-			// text-overflow: ellipsis;
-		}
+		// this is behaving badly right now
+		// > span {
+		// 	max-width: 230px;
+		// 	white-space: nowrap;
+		// 	overflow: hidden;
+		// 	text-overflow: ellipsis;
+		// }
 
 		> img {
 			vertical-align: middle;
