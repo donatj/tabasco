@@ -1,0 +1,17 @@
+{
+	"manifest_version": 2,
+	"name": "Tab Heaven",
+	"description": "Makes Tab Managment Heavenly",
+	"version": "1.0",
+	"offline_enabled": true,
+	"homepage_url": "https://donatstudios.com",
+	"browser_action": {
+		"default_icon": "x.png",
+		"default_title": "Send Tabs to Heaven",
+		"default_popup": "index.html"
+	},
+	"permissions": [
+		"activeTab",
+		"tabs"
+	]
+}

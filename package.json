@@ -1,0 +1,11 @@
+{
+  "name": "tab-heaven",
+  "version": "1.0.0",
+  "description": "Chrome extensiont to murder tabs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Jesse G Donat <donatj@gmail.com>",
+  "license": "MIT"
+}

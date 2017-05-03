@@ -1,0 +1,94 @@
+html, body {
+	min-width: 300px;
+	padding: 0; 
+	margin: 0;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+ul, li {
+	list-style: none;
+	padding: 0;
+	margin: 0;
+}
+
+header {
+	text-align: center;
+	background: -webkit-linear-gradient(top, rgb(254, 254, 254), rgb(230, 230, 230));
+	border-bottom: 1px solid rgb(204, 204, 204);
+	font-size: 16px;
+	height: 30px;
+	padding: 0px 10px;
+	display: block;
+	color: rgb(153, 153, 153);
+	line-height: 30px;
+}
+
+%list {
+	li {
+		line-height: 25px;
+		display: block;
+		border-bottom: 1px solid rgb(204, 204, 204);
+		padding: 2px 4px;
+
+		&:hover {
+			&, & * {
+				text-decoration: underline;
+			}
+			background: -webkit-linear-gradient(top, rgb(254, 254, 254), rgb(230, 230, 230));
+		}
+	}
+}
+
+%vert-list {
+	@extend %list;
+
+	li {
+		> img, span {
+			display: inline-block;
+		}
+
+		> span {
+			max-width: 230px;
+			// white-space: nowrap;
+			// overflow: hidden;
+			// text-overflow: ellipsis;
+		}
+
+		> img {
+			vertical-align: middle;
+			margin: 3px 5px 3px;
+		}
+
+		> button {
+			float: right;
+			display: inline-block;
+			vertical-align: middle; 
+		}
+
+		> small {
+			float: right;
+		}
+	}
+}
+
+#domain-list { 
+	@extend %vert-list;
+
+	li {
+
+	}
+}
+
+#domain-tab-content {
+	@extend %vert-list;
+}
+
+#misc-list {
+	@extend %list;
+	display: flex;
+	li {
+		flex: 1;
+		text-align: center;
+		border-left: 1px solid rgb(204, 204, 204);
+	}
+}
