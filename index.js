@@ -109,6 +109,7 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
     };
     for (let h in hosts) {
         let dli = document.createElement('li');
+        let wrap = document.createElement('div');
         let text = document.createElement('span');
         text.textContent = h;
         let small = document.createElement('small');
@@ -117,14 +118,16 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
         fav.src = hosts[h].favicon || 'icon.png';
         fav.width = 16;
         let closeBtn = imgbtn("x.png");
-        dli.appendChild(fav);
-        dli.appendChild(text);
+        wrap.appendChild(fav);
+        wrap.appendChild(text);
+        wrap.appendChild(small);
+        dli.appendChild(wrap);
         dli.appendChild(closeBtn);
-        dli.appendChild(small);
         domainList.appendChild(dli);
         closeBtn.addEventListener('click', (e) => {
             e.stopPropagation();
             closeTabs(hosts[h].tabs);
+            dli.remove();
         });
         dli.addEventListener('click', () => {
             let domainTabs = hosts[h].tabs;
@@ -133,15 +136,17 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
                 window.close();
             }
             else {
-                mainContent.style.display = 'none';
+                mainContent.innerHTML = '';
                 domainTabContent.style.display = '';
                 domainTabHeader.textContent = h;
                 for (let domainTab of domainTabs) {
                     let dli = document.createElement('li');
+                    let wrap = document.createElement('div');
                     let text = document.createElement('span');
                     text.textContent = domainTab.title;
                     let closeBtn = imgbtn("x.png");
-                    dli.appendChild(text);
+                    wrap.appendChild(text);
+                    dli.appendChild(wrap);
                     dli.appendChild(closeBtn);
                     closeBtn.addEventListener('click', (e) => {
                         e.stopPropagation();

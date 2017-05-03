@@ -43,31 +43,41 @@ header {
 	@extend %list;
 
 	li {
-		> img, span {
-			display: inline-block;
-		}
+		display: flex;
+		padding: 0;
+		
+		> div {
+			padding: 2px 4px;
+			flex: 1;
 
-		// this is behaving badly right now
-		// > span {
-		// 	max-width: 230px;
-		// 	white-space: nowrap;
-		// 	overflow: hidden;
-		// 	text-overflow: ellipsis;
-		// }
+			> img, span {
+				display: inline-block;
+			}
 
-		> img {
-			vertical-align: middle;
-			margin: 3px 5px 3px;
+			> span {
+				word-break: break-word;
+			}
+
+			> img {
+				vertical-align: middle;
+				margin: 3px 5px 3px;
+			}
+
+			> small {
+				float: right;
+			}
 		}
 
 		> button {
-			float: right;
+			background: white;
+			border: none;
+			border-left: 1px solid rgb(204, 204, 204);
 			display: inline-block;
 			vertical-align: middle; 
-		}
 
-		> small {
-			float: right;
+			&:hover {
+				background: #e2d5d5;
+			}
 		}
 	}
 }

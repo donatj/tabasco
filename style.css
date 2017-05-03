@@ -30,17 +30,29 @@ header {
     #domain-list li:hover, #domain-tab-content li:hover, #misc-list li:hover, #domain-list li:hover *, #domain-tab-content li:hover *, #misc-list li:hover * {
       text-decoration: underline; }
 
-#domain-list li > img, #domain-tab-content li > img, #domain-list li span, #domain-tab-content li span {
-  display: inline-block; }
-#domain-list li > img, #domain-tab-content li > img {
-  vertical-align: middle;
-  margin: 3px 5px 3px; }
-#domain-list li > button, #domain-tab-content li > button {
-  float: right;
-  display: inline-block;
-  vertical-align: middle; }
-#domain-list li > small, #domain-tab-content li > small {
-  float: right; }
+#domain-list li, #domain-tab-content li {
+  display: flex;
+  padding: 0; }
+  #domain-list li > div, #domain-tab-content li > div {
+    padding: 2px 4px;
+    flex: 1; }
+    #domain-list li > div > img, #domain-tab-content li > div > img, #domain-list li > div span, #domain-tab-content li > div span {
+      display: inline-block; }
+    #domain-list li > div > span, #domain-tab-content li > div > span {
+      word-break: break-word; }
+    #domain-list li > div > img, #domain-tab-content li > div > img {
+      vertical-align: middle;
+      margin: 3px 5px 3px; }
+    #domain-list li > div > small, #domain-tab-content li > div > small {
+      float: right; }
+  #domain-list li > button, #domain-tab-content li > button {
+    background: white;
+    border: none;
+    border-left: 1px solid #cccccc;
+    display: inline-block;
+    vertical-align: middle; }
+    #domain-list li > button:hover, #domain-tab-content li > button:hover {
+      background: #e2d5d5; }
 
 #misc-list {
   display: flex; }
