@@ -12,7 +12,7 @@ function getAllTabs() {
     return new Promise(resolve => {
         chrome.windows.getAll({ "populate": true }, (windows) => {
             for (let w of windows) {
-                for (let t of w.tabs) {
+                for (let t of w.tabs || []) {
                     tabs.push(t);
                 }
             }
@@ -27,7 +27,7 @@ function getCurrentWindow() {
 }
 function mergeAllWindows(w, tabs) {
     for (let t of tabs) {
-        if (w.id == t.windowId) {
+        if (w.id == t.windowId || !t.id) {
             continue;
         }
         chrome.tabs.move(t.id, { "windowId": w.id, "index": -1 });
@@ -40,6 +40,9 @@ function removeDupes(tabs) {
     let urls = [];
     for (let t of tabs) {
         let a = document.createElement('a');
+        if (!t.url) {
+            continue;
+        }
         a.href = t.url;
         if (a.protocol != 'http:' && a.protocol != 'https:') {
             continue;
@@ -53,6 +56,9 @@ function removeDupes(tabs) {
     }
 }
 function focusTab(tab) {
+    if (!tab.id) {
+        return;
+    }
     chrome.tabs.update(tab.id, { selected: true });
     chrome.windows.update(tab.windowId, { focused: true });
 }
@@ -61,6 +67,9 @@ function closeTabs(tabs) {
         tabs = [tabs];
     }
     for (let t of tabs) {
+        if (!t.id) {
+            continue;
+        }
         chrome.tabs.remove(t.id);
     }
 }
@@ -84,6 +93,9 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
     let hosts = {};
     for (let t of tabs) {
         let a = document.createElement('a');
+        if (!t.url) {
+            continue;
+        }
         a.href = t.url;
         if (a.protocol != 'http:' && a.protocol != 'https:') {
             continue;
@@ -112,7 +124,7 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
         let text = document.createElement('span');
         text.textContent = h;
         let small = document.createElement('small');
-        small.textContent = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : hosts[h].tabs[0].title;
+        small.textContent = hosts[h].count ? `${hosts[h].count} Tabs` : hosts[h].tabs[0].title || 'Unnamed Tab';
         let fav = document.createElement('img');
         fav.src = hosts[h].favicon || 'icon.png';
         let closeBtn = imgbtn("x.png");
@@ -141,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
                     let dli = document.createElement('li');
                     let wrap = document.createElement('div');
                     let text = document.createElement('span');
-                    text.textContent = domainTab.title;
+                    text.textContent = domainTab.title || domainTab.url || "Unnamed Tab";
                     let fav = document.createElement('img');
                     fav.src = hosts[h].favicon || 'icon.png';
                     let closeBtn = imgbtn("x.png");

@@ -4,7 +4,7 @@ function getAllTabs(): Promise<chrome.tabs.Tab[]> {
 	return new Promise(resolve => {
 		chrome.windows.getAll({ "populate": true }, (windows) => {
 			for (let w of windows) {
-				for (let t of w.tabs) {
+				for (let t of w.tabs || []) {
 					tabs.push(t)
 				}
 			}
@@ -22,7 +22,7 @@ function getCurrentWindow(): Promise<chrome.windows.Window> {
 
 function mergeAllWindows(w: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
 	for (let t of tabs) {
-		if (w.id == t.windowId) {
+		if (w.id == t.windowId || !t.id) {
 			continue;
 		}
 
@@ -38,6 +38,10 @@ function removeDupes(tabs: chrome.tabs.Tab[]) {
 	let urls: string[] = [];
 	for (let t of tabs) {
 		let a = document.createElement('a');
+		if (!t.url) {
+			continue;
+		}
+
 		a.href = t.url;
 
 		if (a.protocol != 'http:' && a.protocol != 'https:') {
@@ -53,16 +57,20 @@ function removeDupes(tabs: chrome.tabs.Tab[]) {
 }
 
 function focusTab(tab: chrome.tabs.Tab) {
+	if (!tab.id) { return; }
 	chrome.tabs.update(tab.id, { selected: true });
 	chrome.windows.update(tab.windowId, { focused: true });
 }
 
 function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
-	if(!Array.isArray(tabs)) {
+	if (!Array.isArray(tabs)) {
 		tabs = [tabs];
 	}
-	
-	for(let t of tabs) {
+
+	for (let t of tabs) {
+		if(!t.id) {
+			continue;
+		}
 		chrome.tabs.remove(t.id)
 	}
 }
@@ -70,14 +78,15 @@ function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
 document.addEventListener('DOMContentLoaded', async () => {
 	let [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
 
-	let mainContent = document.getElementById('main-content');
-	let domainTabContent = document.getElementById('domain-tab-content');
-	let domainTabHeader = document.getElementById('domain-tab-header');
-	let domainTabList = document.getElementById('domain-tab-list');
+	let mainContent = <HTMLDivElement>document.getElementById('main-content');
+	let domainTabContent = <HTMLDivElement>document.getElementById('domain-tab-content');
 
-	let domainList = document.getElementById('domain-list');
-	let btnMergeAll = document.getElementById('btn-merge-all');
-	let btnRemoveDupes = document.getElementById('btn-remove-dupes');
+	let domainTabHeader = <HTMLHeadingElement>document.getElementById('domain-tab-header');
+	let domainTabList = <HTMLUListElement>document.getElementById('domain-tab-list');
+
+	let domainList = <HTMLUListElement>document.getElementById('domain-list');
+	let btnMergeAll = <HTMLLIElement>document.getElementById('btn-merge-all');
+	let btnRemoveDupes = <HTMLLIElement>document.getElementById('btn-remove-dupes');
 
 	btnMergeAll.addEventListener('click', () => {
 		mergeAllWindows(currentWindow, tabs);
@@ -92,13 +101,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 	let hosts: {
 		[key: string]: {
 			count: number,
-			favicon: string,
+			favicon: string | undefined,
 			tabs: chrome.tabs.Tab[],
 		}
-	} = {}
+	} = {};
 
 	for (let t of tabs) {
 		let a = document.createElement('a');
+		if (!t.url) {
+			continue;
+		}
 		a.href = t.url;
 
 		if (a.protocol != 'http:' && a.protocol != 'https:') {
@@ -124,7 +136,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		closeBtn.appendChild(ximg);
 
 		return closeBtn;
-	}
+	};
 
 	for (let h in hosts) {
 		let dli = document.createElement('li');
@@ -134,7 +146,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 		text.textContent = h;
 
 		let small = document.createElement('small');
-		small.textContent = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : hosts[h].tabs[0].title;
+		small.textContent = hosts[h].count ? `${hosts[h].count} Tabs` : hosts[h].tabs[0].title || 'Unnamed Tab';
 
 		let fav = document.createElement('img');
 		fav.src = hosts[h].favicon || 'icon.png';
@@ -172,7 +184,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 					let wrap = document.createElement('div');
 
 					let text = document.createElement('span');
-					text.textContent = domainTab.title;
+					text.textContent = domainTab.title || domainTab.url || "Unnamed Tab";
 
 					let fav = document.createElement('img');
 					fav.src = hosts[h].favicon || 'icon.png';
