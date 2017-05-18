@@ -69,8 +69,11 @@ header {
 #misc-list {
   display: flex; }
   #misc-list li {
+    padding: 10px;
     flex: 1;
     text-align: center;
     border-left: 1px solid #cccccc; }
+    #misc-list li:first-of-type {
+      border-left: none; }
 
 /*# sourceMappingURL=style.css.map */

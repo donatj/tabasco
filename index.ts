@@ -1,11 +1,11 @@
 function getAllTabs(): Promise<chrome.tabs.Tab[]> {
-	let tabs: chrome.tabs.Tab[] = [];
+	const tabs: chrome.tabs.Tab[] = [];
 
-	return new Promise(resolve => {
-		chrome.windows.getAll({ "populate": true }, (windows) => {
-			for (let w of windows) {
-				for (let t of w.tabs || []) {
-					tabs.push(t)
+	return new Promise((resolve) => {
+		chrome.windows.getAll({ populate: true }, (windows) => {
+			for (const w of windows) {
+				for (const t of w.tabs || []) {
+					tabs.push(t);
 				}
 			}
 
@@ -15,29 +15,29 @@ function getAllTabs(): Promise<chrome.tabs.Tab[]> {
 }
 
 function getCurrentWindow(): Promise<chrome.windows.Window> {
-	return new Promise(resolve => {
-		chrome.windows.getCurrent((currentWindow) => { resolve(currentWindow) });
+	return new Promise((resolve) => {
+		chrome.windows.getCurrent((currentWindow) => { resolve(currentWindow); });
 	});
 }
 
 function mergeAllWindows(w: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
-	for (let t of tabs) {
+	for (const t of tabs) {
 		if (w.id == t.windowId || !t.id) {
 			continue;
 		}
 
-		chrome.tabs.move(t.id, { "windowId": w.id, "index": -1 });
+		chrome.tabs.move(t.id, { windowId: w.id, index: -1 });
 
 		if (t.pinned) {
-			chrome.tabs.update(t.id, { "pinned": true });
+			chrome.tabs.update(t.id, { pinned: true });
 		}
 	}
 }
 
 function removeDupes(tabs: chrome.tabs.Tab[]) {
-	let urls: string[] = [];
-	for (let t of tabs) {
-		let a = document.createElement('a');
+	const urls: string[] = [];
+	for (const t of tabs) {
+		const a = document.createElement('a');
 		if (!t.url) {
 			continue;
 		}
@@ -67,26 +67,91 @@ function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
 		tabs = [tabs];
 	}
 
-	for (let t of tabs) {
-		if(!t.id) {
+	for (const t of tabs) {
+		if (!t.id) {
 			continue;
 		}
-		chrome.tabs.remove(t.id)
+		chrome.tabs.remove(t.id);
+	}
+}
+
+interface Controller {
+	getElement: () => HTMLElement;
+}
+
+class TabLiButtonController implements Controller {
+	protected button: HTMLButtonElement = document.createElement('button');
+
+	constructor(icon: string) {
+		const img = document.createElement('img');
+		img.src = icon;
+		img.width = 10;
+
+		this.button.appendChild(img);
+	}
+
+	public getElement() {
+		return this.button;
+	}
+
+	public onClick(listener: (this: HTMLEmbedElement, ev: MouseEvent) => any): void {
+		this.button.addEventListener('click', listener);
+	}
+}
+
+class TabLiController implements Controller {
+	protected li: HTMLLIElement = document.createElement('li');
+
+	constructor(textContent: string, subtextContent: string = "", icon: string = "") {
+		const wrap = document.createElement('div');
+
+		const text = document.createElement('span');
+		text.textContent = textContent;
+
+		const fav = document.createElement('img');
+		fav.src = icon;
+
+		wrap.appendChild(fav);
+		wrap.appendChild(text);
+
+		if (subtextContent) {
+			const small = document.createElement('small');
+			small.textContent = subtextContent;
+			wrap.appendChild(small);
+		}
+
+		this.li.appendChild(wrap);
+	}
+
+	public addTabButton(btn: TabLiButtonController) {
+		this.li.appendChild(btn.getElement());
+	}
+
+	public getElement() {
+		return this.li;
+	}
+
+	public remove() {
+		this.li.remove();
+	}
+
+	public onClick(listener: (this: HTMLEmbedElement, ev: MouseEvent) => any): void {
+		this.li.addEventListener('click', listener);
 	}
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-	let [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
+	const [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
 
-	let mainContent = <HTMLDivElement>document.getElementById('main-content');
-	let domainTabContent = <HTMLDivElement>document.getElementById('domain-tab-content');
+	const mainContent = document.getElementById('main-content') as HTMLDivElement;
+	const domainTabContent = document.getElementById('domain-tab-content') as HTMLDivElement;
 
-	let domainTabHeader = <HTMLHeadingElement>document.getElementById('domain-tab-header');
-	let domainTabList = <HTMLUListElement>document.getElementById('domain-tab-list');
+	const domainTabHeader = document.getElementById('domain-tab-header') as HTMLHeadingElement;
+	const domainTabList = document.getElementById('domain-tab-list') as HTMLUListElement;
 
-	let domainList = <HTMLUListElement>document.getElementById('domain-list');
-	let btnMergeAll = <HTMLLIElement>document.getElementById('btn-merge-all');
-	let btnRemoveDupes = <HTMLLIElement>document.getElementById('btn-remove-dupes');
+	const domainList = document.getElementById('domain-list') as HTMLUListElement;
+	const btnMergeAll = document.getElementById('btn-merge-all') as HTMLLIElement;
+	const btnRemoveDupes = document.getElementById('btn-remove-dupes') as HTMLLIElement;
 
 	btnMergeAll.addEventListener('click', () => {
 		mergeAllWindows(currentWindow, tabs);
@@ -98,16 +163,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 		window.close();
 	});
 
-	let hosts: {
+	const hosts: {
 		[key: string]: {
 			count: number,
 			favicon: string | undefined,
 			tabs: chrome.tabs.Tab[],
-		}
+		},
 	} = {};
 
-	for (let t of tabs) {
-		let a = document.createElement('a');
+	for (const t of tabs) {
+		const a = document.createElement('a');
 		if (!t.url) {
 			continue;
 		}
@@ -125,51 +190,27 @@ document.addEventListener('DOMContentLoaded', async () => {
 			};
 		}
 		hosts[a.host].count += 1;
-		hosts[a.host].tabs.push(t)
+		hosts[a.host].tabs.push(t);
 	}
 
-	let imgbtn = (imgsrc: string): HTMLButtonElement => {
-		let ximg = document.createElement('img');
-		ximg.src = imgsrc;
-		ximg.width = 10;
-		let closeBtn = document.createElement('button');
-		closeBtn.appendChild(ximg);
+	for (const h in hosts) {
+		const subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab');
 
-		return closeBtn;
-	};
+		const xxli = new TabLiController(h, subtext, hosts[h].favicon || 'icon.png');
+		const xxbtn = new TabLiButtonController('x.png');
 
-	for (let h in hosts) {
-		let dli = document.createElement('li');
-		let wrap = document.createElement('div');
+		xxli.addTabButton(xxbtn);
 
-		let text = document.createElement('span');
-		text.textContent = h;
+		domainList.appendChild(xxli.getElement());
 
-		let small = document.createElement('small');
-		small.textContent = hosts[h].count ? `${hosts[h].count} Tabs` : hosts[h].tabs[0].title || 'Unnamed Tab';
-
-		let fav = document.createElement('img');
-		fav.src = hosts[h].favicon || 'icon.png';
-
-		let closeBtn = imgbtn("x.png");
-
-		wrap.appendChild(fav);
-		wrap.appendChild(text);
-		wrap.appendChild(small);
-
-		dli.appendChild(wrap);
-		dli.appendChild(closeBtn);
-
-		domainList.appendChild(dli);
-
-		closeBtn.addEventListener('click', (e) => {
+		xxbtn.onClick((e) => {
 			e.stopPropagation();
 			closeTabs(hosts[h].tabs);
-			dli.remove();
+			xxli.remove();
 		});
 
-		dli.addEventListener('click', () => {
-			let domainTabs = hosts[h].tabs;
+		xxli.onClick(() => {
+			const domainTabs = hosts[h].tabs;
 
 			if (hosts[h].count == 1) {
 				focusTab(domainTabs[0]);
@@ -179,39 +220,31 @@ document.addEventListener('DOMContentLoaded', async () => {
 				domainTabContent.style.display = '';
 				domainTabHeader.textContent = h;
 
-				for (let domainTab of domainTabs) {
-					let dli = document.createElement('li');
-					let wrap = document.createElement('div');
+				for (const domainTab of domainTabs) {
+					const dtli = new TabLiController(
+						domainTab.title || domainTab.url || "Unnamed Tab",
+						"",
+						hosts[h].favicon || 'icon.png',
+					);
 
-					let text = document.createElement('span');
-					text.textContent = domainTab.title || domainTab.url || "Unnamed Tab";
+					const dcbtn = new TabLiButtonController('x.png');
+					dtli.addTabButton(dcbtn);
 
-					let fav = document.createElement('img');
-					fav.src = hosts[h].favicon || 'icon.png';
+					domainTabList.appendChild(dtli.getElement());
 
-					let closeBtn = imgbtn("x.png");
-
-					wrap.appendChild(fav);
-					wrap.appendChild(text);
-
-					dli.appendChild(wrap);
-					dli.appendChild(closeBtn);
-
-					closeBtn.addEventListener('click', (e) => {
+					dcbtn.onClick((e) => {
 						e.stopPropagation();
 						closeTabs(domainTab);
-						dli.remove();
+						dtli.remove();
 					});
 
-					dli.addEventListener('click', () => {
+					dtli.onClick(() => {
 						focusTab(domainTab);
 						window.close();
 					});
-
-					domainTabList.appendChild(dli);
 				}
 			}
-		})
+		});
 	}
 
 });

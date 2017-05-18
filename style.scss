@@ -23,6 +23,11 @@ header {
 	line-height: 30px;
 }
 
+#domain-search {
+	width: 100%;
+	margin-bottom: 3px;
+}
+
 %list {
 	li {
 		line-height: 1.1em;
@@ -107,8 +112,12 @@ header {
 	@extend %list;
 	display: flex;
 	li {
+		padding: 10px;
 		flex: 1;
 		text-align: center;
 		border-left: 1px solid rgb(204, 204, 204);
+		&:first-of-type {
+			border-left: none;
+		}
 	}
 }
