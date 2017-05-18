@@ -196,7 +196,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 	for (const h in hosts) {
 		const subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab');
 
-		const xxli = new TabLiController(h, subtext, hosts[h].favicon || 'icon.png');
+		const xxli = new TabLiController(h, subtext, hosts[h].favicon || 'icon128.png');
 		const xxbtn = new TabLiButtonController('x.png');
 
 		xxli.addTabButton(xxbtn);
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 					const dtli = new TabLiController(
 						domainTab.title || domainTab.url || "Unnamed Tab",
 						"",
-						hosts[h].favicon || 'icon.png',
+						hosts[h].favicon || 'icon128.png',
 					);
 
 					const dcbtn = new TabLiButtonController('x.png');

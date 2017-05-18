@@ -8,11 +8,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 function getAllTabs() {
-    let tabs = [];
-    return new Promise(resolve => {
-        chrome.windows.getAll({ "populate": true }, (windows) => {
-            for (let w of windows) {
-                for (let t of w.tabs || []) {
+    const tabs = [];
+    return new Promise((resolve) => {
+        chrome.windows.getAll({ populate: true }, (windows) => {
+            for (const w of windows) {
+                for (const t of w.tabs || []) {
                     tabs.push(t);
                 }
             }
@@ -21,25 +21,25 @@ function getAllTabs() {
     });
 }
 function getCurrentWindow() {
-    return new Promise(resolve => {
+    return new Promise((resolve) => {
         chrome.windows.getCurrent((currentWindow) => { resolve(currentWindow); });
     });
 }
 function mergeAllWindows(w, tabs) {
-    for (let t of tabs) {
+    for (const t of tabs) {
         if (w.id == t.windowId || !t.id) {
             continue;
         }
-        chrome.tabs.move(t.id, { "windowId": w.id, "index": -1 });
+        chrome.tabs.move(t.id, { windowId: w.id, index: -1 });
         if (t.pinned) {
-            chrome.tabs.update(t.id, { "pinned": true });
+            chrome.tabs.update(t.id, { pinned: true });
         }
     }
 }
 function removeDupes(tabs) {
-    let urls = [];
-    for (let t of tabs) {
-        let a = document.createElement('a');
+    const urls = [];
+    for (const t of tabs) {
+        const a = document.createElement('a');
         if (!t.url) {
             continue;
         }
@@ -66,7 +66,7 @@ function closeTabs(tabs) {
     if (!Array.isArray(tabs)) {
         tabs = [tabs];
     }
-    for (let t of tabs) {
+    for (const t of tabs) {
         if (!t.id) {
             continue;
         }
@@ -76,7 +76,7 @@ function closeTabs(tabs) {
 class TabLiButtonController {
     constructor(icon) {
         this.button = document.createElement('button');
-        let img = document.createElement('img');
+        const img = document.createElement('img');
         img.src = icon;
         img.width = 10;
         this.button.appendChild(img);
@@ -91,15 +91,15 @@ class TabLiButtonController {
 class TabLiController {
     constructor(textContent, subtextContent = "", icon = "") {
         this.li = document.createElement('li');
-        let wrap = document.createElement('div');
-        let text = document.createElement('span');
+        const wrap = document.createElement('div');
+        const text = document.createElement('span');
         text.textContent = textContent;
-        let fav = document.createElement('img');
+        const fav = document.createElement('img');
         fav.src = icon;
         wrap.appendChild(fav);
         wrap.appendChild(text);
         if (subtextContent) {
-            let small = document.createElement('small');
+            const small = document.createElement('small');
             small.textContent = subtextContent;
             wrap.appendChild(small);
         }
@@ -119,14 +119,14 @@ class TabLiController {
     }
 }
 document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void 0, function* () {
-    let [tabs, currentWindow] = yield Promise.all([getAllTabs(), getCurrentWindow()]);
-    let mainContent = document.getElementById('main-content');
-    let domainTabContent = document.getElementById('domain-tab-content');
-    let domainTabHeader = document.getElementById('domain-tab-header');
-    let domainTabList = document.getElementById('domain-tab-list');
-    let domainList = document.getElementById('domain-list');
-    let btnMergeAll = document.getElementById('btn-merge-all');
-    let btnRemoveDupes = document.getElementById('btn-remove-dupes');
+    const [tabs, currentWindow] = yield Promise.all([getAllTabs(), getCurrentWindow()]);
+    const mainContent = document.getElementById('main-content');
+    const domainTabContent = document.getElementById('domain-tab-content');
+    const domainTabHeader = document.getElementById('domain-tab-header');
+    const domainTabList = document.getElementById('domain-tab-list');
+    const domainList = document.getElementById('domain-list');
+    const btnMergeAll = document.getElementById('btn-merge-all');
+    const btnRemoveDupes = document.getElementById('btn-remove-dupes');
     btnMergeAll.addEventListener('click', () => {
         mergeAllWindows(currentWindow, tabs);
         window.close();
@@ -135,9 +135,9 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
         removeDupes(tabs);
         window.close();
     });
-    let hosts = {};
-    for (let t of tabs) {
-        let a = document.createElement('a');
+    const hosts = {};
+    for (const t of tabs) {
+        const a = document.createElement('a');
         if (!t.url) {
             continue;
         }
@@ -155,10 +155,10 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
         hosts[a.host].count += 1;
         hosts[a.host].tabs.push(t);
     }
-    for (let h in hosts) {
-        let subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab');
-        let xxli = new TabLiController(h, subtext, hosts[h].favicon || 'icon.png');
-        let xxbtn = new TabLiButtonController('x.png');
+    for (const h in hosts) {
+        const subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab');
+        const xxli = new TabLiController(h, subtext, hosts[h].favicon || 'icon128.png');
+        const xxbtn = new TabLiButtonController('x.png');
         xxli.addTabButton(xxbtn);
         domainList.appendChild(xxli.getElement());
         xxbtn.onClick((e) => {
@@ -167,7 +167,7 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
             xxli.remove();
         });
         xxli.onClick(() => {
-            let domainTabs = hosts[h].tabs;
+            const domainTabs = hosts[h].tabs;
             if (hosts[h].count == 1) {
                 focusTab(domainTabs[0]);
                 window.close();
@@ -176,9 +176,9 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
                 mainContent.style.display = 'none';
                 domainTabContent.style.display = '';
                 domainTabHeader.textContent = h;
-                for (let domainTab of domainTabs) {
-                    let dtli = new TabLiController(domainTab.title || domainTab.url || "Unnamed Tab", "", hosts[h].favicon || 'icon.png');
-                    let dcbtn = new TabLiButtonController('x.png');
+                for (const domainTab of domainTabs) {
+                    const dtli = new TabLiController(domainTab.title || domainTab.url || "Unnamed Tab", "", hosts[h].favicon || 'icon128.png');
+                    const dcbtn = new TabLiButtonController('x.png');
                     dtli.addTabButton(dcbtn);
                     domainTabList.appendChild(dtli.getElement());
                     dcbtn.onClick((e) => {
