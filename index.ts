@@ -1,32 +1,45 @@
-function getAllTabs(): Promise<chrome.tabs.Tab[]> {
+async function getAllTabs(): Promise<chrome.tabs.Tab[]> {
+	const windows = await getAllWindows();
 	const tabs: chrome.tabs.Tab[] = [];
 
-	return new Promise((resolve) => {
-		chrome.windows.getAll({ populate: true }, (windows) => {
-			for (const w of windows) {
-				for (const t of w.tabs || []) {
-					tabs.push(t);
-				}
-			}
+	for (const w of windows) {
+		for (const t of w.tabs || []) {
+			tabs.push(t);
+		}
+	}
 
-			resolve(tabs);
-		});
-	});
+	return tabs;
 }
 
 function getCurrentWindow(): Promise<chrome.windows.Window> {
-	return new Promise((resolve) => {
+	return new Promise<chrome.windows.Window>((resolve) => {
 		chrome.windows.getCurrent((currentWindow) => { resolve(currentWindow); });
 	});
 }
 
-function mergeAllWindows(w: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
+function getAllWindows(): Promise<chrome.windows.Window[]> {
+	return new Promise<chrome.windows.Window[]>((resolve) => {
+		chrome.windows.getAll({ populate: true }, (windows) => {
+			resolve(windows);
+		});
+	});
+}
+
+async function mergeAllWindows(w: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
+	const windows = await getAllWindows();
+	const windowsById: { [i: number]: chrome.windows.Window } = {};
+	for (const w of windows) {
+		windowsById[w.id] = w;
+	}
+
 	for (const t of tabs) {
 		if (w.id == t.windowId || !t.id) {
 			continue;
 		}
 
-		chrome.tabs.move(t.id, { windowId: w.id, index: -1 });
+		if (!(windowsById[t.windowId].state == 'fullscreen' && t.active)) {
+			chrome.tabs.move(t.id, { windowId: w.id, index: -1 });
+		}
 
 		if (t.pinned) {
 			chrome.tabs.update(t.id, { pinned: true });
@@ -153,8 +166,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const btnMergeAll = document.getElementById('btn-merge-all') as HTMLLIElement;
 	const btnRemoveDupes = document.getElementById('btn-remove-dupes') as HTMLLIElement;
 
-	btnMergeAll.addEventListener('click', () => {
-		mergeAllWindows(currentWindow, tabs);
+	btnMergeAll.addEventListener('click', async () => {
+		await mergeAllWindows(currentWindow, tabs);
 		window.close();
 	});
 

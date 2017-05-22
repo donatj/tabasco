@@ -8,16 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 function getAllTabs() {
-    const tabs = [];
-    return new Promise((resolve) => {
-        chrome.windows.getAll({ populate: true }, (windows) => {
-            for (const w of windows) {
-                for (const t of w.tabs || []) {
-                    tabs.push(t);
-                }
+    return __awaiter(this, void 0, void 0, function* () {
+        const windows = yield getAllWindows();
+        const tabs = [];
+        for (const w of windows) {
+            for (const t of w.tabs || []) {
+                tabs.push(t);
             }
-            resolve(tabs);
-        });
+        }
+        return tabs;
     });
 }
 function getCurrentWindow() {
@@ -25,16 +24,32 @@ function getCurrentWindow() {
         chrome.windows.getCurrent((currentWindow) => { resolve(currentWindow); });
     });
 }
+function getAllWindows() {
+    return new Promise((resolve) => {
+        chrome.windows.getAll({ populate: true }, (windows) => {
+            resolve(windows);
+        });
+    });
+}
 function mergeAllWindows(w, tabs) {
-    for (const t of tabs) {
-        if (w.id == t.windowId || !t.id) {
-            continue;
+    return __awaiter(this, void 0, void 0, function* () {
+        const windows = yield getAllWindows();
+        const windowsById = {};
+        for (const w of windows) {
+            windowsById[w.id] = w;
         }
-        chrome.tabs.move(t.id, { windowId: w.id, index: -1 });
-        if (t.pinned) {
-            chrome.tabs.update(t.id, { pinned: true });
+        for (const t of tabs) {
+            if (w.id == t.windowId || !t.id) {
+                continue;
+            }
+            if (!(windowsById[t.windowId].state == 'fullscreen' && t.active)) {
+                chrome.tabs.move(t.id, { windowId: w.id, index: -1 });
+            }
+            if (t.pinned) {
+                chrome.tabs.update(t.id, { pinned: true });
+            }
         }
-    }
+    });
 }
 function removeDupes(tabs) {
     const urls = [];
@@ -127,10 +142,10 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
     const domainList = document.getElementById('domain-list');
     const btnMergeAll = document.getElementById('btn-merge-all');
     const btnRemoveDupes = document.getElementById('btn-remove-dupes');
-    btnMergeAll.addEventListener('click', () => {
-        mergeAllWindows(currentWindow, tabs);
+    btnMergeAll.addEventListener('click', () => __awaiter(this, void 0, void 0, function* () {
+        yield mergeAllWindows(currentWindow, tabs);
         window.close();
-    });
+    }));
     btnRemoveDupes.addEventListener('click', () => {
         removeDupes(tabs);
         window.close();
