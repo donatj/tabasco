@@ -6,7 +6,7 @@
 	"offline_enabled": true,
 	"homepage_url": "https://donatstudios.com",
 	"browser_action": {
-		"default_icon": "x.png",
+		"default_icon": "icon128.png",
 		"default_title": "Send Tabs to Heaven",
 		"default_popup": "index.html"
 	},
