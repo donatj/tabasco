@@ -3,6 +3,8 @@ html, body {
 	padding: 0; 
 	margin: 0;
 	font-family: Arial, Helvetica, sans-serif;
+
+	height: 0; // forces window to autosize
 }
 
 ul, li {
@@ -50,6 +52,10 @@ header {
 	li {
 		display: flex;
 		padding: 0;
+
+		&:last-of-type {
+			border-bottom: none;
+		}
 		
 		> div {
 			padding: 2px 4px;
@@ -99,9 +105,9 @@ header {
 #domain-list { 
 	@extend %vert-list;
 
-	li {
+	// li {
 
-	}
+	// }
 }
 
 #domain-tab-content {
