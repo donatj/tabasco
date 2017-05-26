@@ -1,0 +1,3 @@
+interface Controller {
+	getElement: () => HTMLElement;
+}
