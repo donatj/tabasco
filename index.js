@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => __awaiter(this, void 0, void
         hosts[a.host].tabs.push(t);
     }
     for (const h in hosts) {
-        const subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab');
+        const subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab').substring(0, 70);
         const xxli = new TabLiController(h, subtext, hosts[h].favicon || 'icon128.png');
         const xxbtn = new TabLiButtonController('x.png');
         xxli.addTabButton(xxbtn);
