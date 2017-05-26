@@ -4,7 +4,7 @@
 	"description": "Spicy Tab Managment",
 	"version": "0.0.1",
 	"offline_enabled": true,
-	"homepage_url": "https://donatstudios.com",
+	"homepage_url": "https://github.com/donatj/tabasco",
 	"browser_action": {
 		"default_icon": "icon128.png",
 		"default_title": "Send Tabs to Heaven",
