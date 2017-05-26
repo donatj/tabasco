@@ -5,7 +5,7 @@ build:
 	sass style.scss:style.css
 
 zip:
-	zip release.zip manifest.json *.css *.png *.js *.md
+	zip release.zip manifest.json *.html *.css *.png *.js *.md
 
 release: clean build zip
 
