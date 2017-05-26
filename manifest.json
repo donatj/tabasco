@@ -1,8 +1,8 @@
 {
 	"manifest_version": 2,
-	"name": "Tab Heaven",
-	"description": "Makes Tab Managment Heavenly",
-	"version": "1.0",
+	"name": "Tabasco",
+	"description": "Spicy Tab Managment",
+	"version": "0.0.1",
 	"offline_enabled": true,
 	"homepage_url": "https://donatstudios.com",
 	"browser_action": {
