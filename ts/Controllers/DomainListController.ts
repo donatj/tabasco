@@ -3,7 +3,7 @@ interface hostgroup {
 		count: number,
 		favicon: string | undefined,
 		tabs: chrome.tabs.Tab[],
-	},
+	};
 }
 
 class DomainListController /*implements Controller*/ {
@@ -11,14 +11,49 @@ class DomainListController /*implements Controller*/ {
 	public constructor(
 		protected tabs: chrome.tabs.Tab[],
 		protected lC: ListController,
+		protected searchInput: HTMLInputElement,
 		// tabList: HTMLUListElement,
 		protected tabHeader: HTMLHeadingElement,
 	) {
-		let hosts = this.getGroupedTabs();
+		const hosts = this.getGroupedTabs();
 		this.displayDomainList(hosts);
+
+		let k = 0;
+		let last = '';
+		const toe = () => {
+			clearTimeout(k);
+			k = setTimeout(() => {
+				if (searchInput.value == "") {
+					console.log('displayDomainList');
+					this.displayDomainList(hosts);
+					return;
+				}
+				if(last == searchInput.value) {
+					return;
+				}
+				this.lC.empty();
+				this.tabHeader.textContent = 'Search…';
+				for (const t of tabs) {
+					if (
+						(t.title && t.title.toLocaleLowerCase().includes(searchInput.value.toLocaleLowerCase())) 
+						|| (t.url && t.url.includes(searchInput.value))
+					) {
+						const tli = this.getTabLiController(t);
+						this.lC.addTabLiController(tli);
+					}
+				}
+
+				last = searchInput.value;
+			}, 100);
+		};
+		searchInput.addEventListener('change', toe);
+		searchInput.addEventListener('keyup', toe);
+		searchInput.addEventListener('click', toe);
 	}
 
 	private displayDomainList(hosts: hostgroup) {
+		this.lC.empty();
+
 		for (const h in hosts) {
 			const subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab').substring(0, 70);
 
@@ -54,28 +89,33 @@ class DomainListController /*implements Controller*/ {
 
 		this.lC.empty();
 		for (const domainTab of domainTabs) {
-			const dtli = new TabLiController(
-				domainTab.title || domainTab.url || "Unnamed Tab",
-				"",
-				hosts[h].favicon || 'icon128.png',
-			);
-
-			const dcbtn = new TabLiButtonController('x.png');
-			dtli.addTabButton(dcbtn);
-
+			const dtli = this.getTabLiController(domainTab);
 			this.lC.addTabLiController(dtli);
-
-			dcbtn.onClick((e) => {
-				e.stopPropagation();
-				closeTabs(domainTab);
-				dtli.remove();
-			});
-
-			dtli.onClick(() => {
-				focusTab(domainTab);
-				window.close();
-			});
 		}
+	}
+
+	private getTabLiController(domainTab: chrome.tabs.Tab) {
+		const dtli = new TabLiController(
+			domainTab.title || domainTab.url || "Unnamed Tab",
+			"",
+			domainTab.favIconUrl || 'icon128.png',
+		);
+
+		const dcbtn = new TabLiButtonController('x.png');
+		dtli.addTabButton(dcbtn);
+
+		dcbtn.onClick((e) => {
+			e.stopPropagation();
+			closeTabs(domainTab);
+			dtli.remove();
+		});
+
+		dtli.onClick(() => {
+			focusTab(domainTab);
+			window.close();
+		});
+
+		return dtli;
 	}
 
 	protected getGroupedTabs() {

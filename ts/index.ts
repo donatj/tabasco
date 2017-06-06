@@ -13,6 +13,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const btnMergeAll = document.getElementById('btn-merge-all') as HTMLLIElement;
 	const btnRemoveDupes = document.getElementById('btn-remove-dupes') as HTMLLIElement;
 
+	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+
 	btnMergeAll.addEventListener('click', async () => {
 		await mergeAllWindows(currentWindow, tabs);
 		window.close();
@@ -23,9 +25,9 @@ document.addEventListener('DOMContentLoaded', async () => {
 		window.close();
 	});
 
-	let lC = new ListController(tabList);
+	const lC = new ListController(tabList);
 
 	new DomainListController(
-		tabs, lC, tabHeader
+		tabs, lC, searchInput, tabHeader,
 	);
 });

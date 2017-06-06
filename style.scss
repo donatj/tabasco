@@ -15,7 +15,10 @@ ul, li {
 
 #search-input {
 	width: 100%;
-	margin-bottom: 5px;
+	outline-width: 0;
+	border: none;
+	padding: 8px;
+	border-bottom: 1px solid rgb(204, 204, 204);
 }
 
 header {
