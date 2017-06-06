@@ -1,4 +1,4 @@
-interface hostgroup {
+interface HostGroup {
 	[key: string]: {
 		count: number,
 		favicon: string | undefined,
@@ -12,7 +12,6 @@ class DomainListController /*implements Controller*/ {
 		protected tabs: chrome.tabs.Tab[],
 		protected lC: ListController,
 		protected searchInput: HTMLInputElement,
-		// tabList: HTMLUListElement,
 		protected tabHeader: HTMLHeadingElement,
 	) {
 		const hosts = this.getGroupedTabs();
@@ -28,14 +27,14 @@ class DomainListController /*implements Controller*/ {
 					this.displayDomainList(hosts);
 					return;
 				}
-				if(last == searchInput.value) {
+				if (last == searchInput.value) {
 					return;
 				}
 				this.lC.empty();
 				this.tabHeader.textContent = 'Search…';
 				for (const t of tabs) {
 					if (
-						(t.title && t.title.toLocaleLowerCase().includes(searchInput.value.toLocaleLowerCase())) 
+						(t.title && t.title.toLocaleLowerCase().includes(searchInput.value.toLocaleLowerCase()))
 						|| (t.url && t.url.includes(searchInput.value))
 					) {
 						const tli = this.getTabLiController(t);
@@ -51,38 +50,42 @@ class DomainListController /*implements Controller*/ {
 		searchInput.addEventListener('click', toe);
 	}
 
-	private displayDomainList(hosts: hostgroup) {
+	private displayDomainList(hosts: HostGroup) {
 		this.lC.empty();
+		this.tabHeader.textContent = 'Tabs';
 
 		for (const h in hosts) {
-			const subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab').substring(0, 70);
+			if (hosts[h].count > 1) {
+				const xxli = new TabLiController(h, `${hosts[h].count} Tabs`, hosts[h].favicon || 'icon128.png');
+				const xxbtn = new TabLiButtonController('x.png');
 
-			const xxli = new TabLiController(h, subtext, hosts[h].favicon || 'icon128.png');
-			const xxbtn = new TabLiButtonController('x.png');
+				xxli.addTabButton(xxbtn);
 
-			xxli.addTabButton(xxbtn);
+				xxbtn.onClick((e) => {
+					e.stopPropagation();
+					closeTabs(hosts[h].tabs);
+					xxli.remove();
+				});
 
-			// tabList.appendChild(xxli.getElement());
-			this.lC.addTabLiController(xxli);
+				xxli.onClick(() => {
+					if (hosts[h].count == 1) {
+						focusTab(hosts[h].tabs[0]);
+						window.close();
+					} else {
+						this.displaySpecificDomain(hosts, h);
+					}
+				});
 
-			xxbtn.onClick((e) => {
-				e.stopPropagation();
-				closeTabs(hosts[h].tabs);
-				xxli.remove();
-			});
+				this.lC.addTabLiController(xxli);
+			} else {
+				const xxli = this.getTabLiController(hosts[h].tabs[0]);
 
-			xxli.onClick(() => {
-				if (hosts[h].count == 1) {
-					focusTab(hosts[h].tabs[0]);
-					window.close();
-				} else {
-					this.displaySpecificDomain(hosts, h);
-				}
-			});
+				this.lC.addTabLiController(xxli);
+			}
 		}
 	}
 
-	private displaySpecificDomain(hosts: hostgroup, h: string) {
+	private displaySpecificDomain(hosts: HostGroup, h: string) {
 		const domainTabs = hosts[h].tabs;
 
 		this.tabHeader.textContent = h;
@@ -119,7 +122,7 @@ class DomainListController /*implements Controller*/ {
 	}
 
 	protected getGroupedTabs() {
-		const hosts: hostgroup = {};
+		const hosts: HostGroup = {};
 
 		for (const t of this.tabs) {
 			const a = document.createElement('a');
