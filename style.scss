@@ -13,6 +13,11 @@ ul, li {
 	margin: 0;
 }
 
+#search-input {
+	width: 100%;
+	margin-bottom: 5px;
+}
+
 header {
 	text-align: center;
 	background: -webkit-linear-gradient(top, rgb(254, 254, 254), rgb(230, 230, 230));
@@ -110,7 +115,11 @@ header {
 	// }
 }
 
-#domain-tab-content {
+// #domain-tab-content {
+// 	@extend %vert-list;
+// }
+
+#tab-list { 
 	@extend %vert-list;
 }
 

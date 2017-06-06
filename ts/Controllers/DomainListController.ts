@@ -10,15 +10,15 @@ class DomainListController /*implements Controller*/ {
 
 	public constructor(
 		protected tabs: chrome.tabs.Tab[],
-		mainContent: HTMLDivElement,
-		domainList: HTMLUListElement,
-		domainTabList: HTMLUListElement,
-		domainTabContent: HTMLDivElement,
-		domainTabHeader: HTMLHeadingElement,
+		protected lC: ListController,
+		// tabList: HTMLUListElement,
+		protected tabHeader: HTMLHeadingElement,
 	) {
 		let hosts = this.getGroupedTabs();
+		this.displayDomainList(hosts);
+	}
 
-
+	private displayDomainList(hosts: hostgroup) {
 		for (const h in hosts) {
 			const subtext = hosts[h].count > 1 ? `${hosts[h].count} Tabs` : (hosts[h].tabs[0].title || 'Unnamed Tab').substring(0, 70);
 
@@ -27,7 +27,8 @@ class DomainListController /*implements Controller*/ {
 
 			xxli.addTabButton(xxbtn);
 
-			domainList.appendChild(xxli.getElement());
+			// tabList.appendChild(xxli.getElement());
+			this.lC.addTabLiController(xxli);
 
 			xxbtn.onClick((e) => {
 				e.stopPropagation();
@@ -36,40 +37,43 @@ class DomainListController /*implements Controller*/ {
 			});
 
 			xxli.onClick(() => {
-				const domainTabs = hosts[h].tabs;
-
 				if (hosts[h].count == 1) {
-					focusTab(domainTabs[0]);
+					focusTab(hosts[h].tabs[0]);
 					window.close();
 				} else {
-					mainContent.style.display = 'none';
-					domainTabContent.style.display = '';
-					domainTabHeader.textContent = h;
-
-					for (const domainTab of domainTabs) {
-						const dtli = new TabLiController(
-							domainTab.title || domainTab.url || "Unnamed Tab",
-							"",
-							hosts[h].favicon || 'icon128.png',
-						);
-
-						const dcbtn = new TabLiButtonController('x.png');
-						dtli.addTabButton(dcbtn);
-
-						domainTabList.appendChild(dtli.getElement());
-
-						dcbtn.onClick((e) => {
-							e.stopPropagation();
-							closeTabs(domainTab);
-							dtli.remove();
-						});
-
-						dtli.onClick(() => {
-							focusTab(domainTab);
-							window.close();
-						});
-					}
+					this.displaySpecificDomain(hosts, h);
 				}
+			});
+		}
+	}
+
+	private displaySpecificDomain(hosts: hostgroup, h: string) {
+		const domainTabs = hosts[h].tabs;
+
+		this.tabHeader.textContent = h;
+
+		this.lC.empty();
+		for (const domainTab of domainTabs) {
+			const dtli = new TabLiController(
+				domainTab.title || domainTab.url || "Unnamed Tab",
+				"",
+				hosts[h].favicon || 'icon128.png',
+			);
+
+			const dcbtn = new TabLiButtonController('x.png');
+			dtli.addTabButton(dcbtn);
+
+			this.lC.addTabLiController(dtli);
+
+			dcbtn.onClick((e) => {
+				e.stopPropagation();
+				closeTabs(domainTab);
+				dtli.remove();
+			});
+
+			dtli.onClick(() => {
+				focusTab(domainTab);
+				window.close();
 			});
 		}
 	}
