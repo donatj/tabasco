@@ -1,4 +1,4 @@
-async function mergeAllWindows(w: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
+async function mergeAllWindows(window: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
 	const windows = await getAllWindows();
 	const windowsById: { [i: number]: chrome.windows.Window } = {};
 	for (const w of windows) {
@@ -6,12 +6,12 @@ async function mergeAllWindows(w: chrome.windows.Window, tabs: chrome.tabs.Tab[]
 	}
 
 	for (const t of tabs) {
-		if (w.id == t.windowId || !t.id) {
+		if (window.id == t.windowId || !t.id) {
 			continue;
 		}
 
 		if (!(windowsById[t.windowId].state == 'fullscreen' && t.active)) {
-			chrome.tabs.move(t.id, { windowId: w.id, index: -1 });
+			chrome.tabs.move(t.id, { windowId: window.id, index: -1 });
 		}
 
 		if (t.pinned) {
