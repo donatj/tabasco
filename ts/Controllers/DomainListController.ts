@@ -8,14 +8,16 @@ interface HostGroup {
 
 class DomainListController /*implements Controller*/ {
 
+	private hosts: HostGroup = {};
+
 	public constructor(
 		protected tabs: chrome.tabs.Tab[],
 		protected lC: ListController,
 		protected searchInput: HTMLInputElement,
 		protected tabHeader: HTMLHeadingElement,
 	) {
-		const hosts = this.getGroupedTabs();
-		this.displayDomainList(hosts);
+		this.hosts = this.getGroupedTabs();
+		this.displayDomainList(this.hosts);
 
 		let k = 0;
 		let last = '';
@@ -24,7 +26,7 @@ class DomainListController /*implements Controller*/ {
 			k = setTimeout(() => {
 				if (searchInput.value == "") {
 					console.log('displayDomainList');
-					this.displayDomainList(hosts);
+					this.displayDomainList(this.hosts);
 					return;
 				}
 				if (last == searchInput.value) {
@@ -94,10 +96,17 @@ class DomainListController /*implements Controller*/ {
 		for (const domainTab of domainTabs) {
 			const dtli = this.getTabLiController(domainTab);
 			this.lC.addTabLiController(dtli);
+
+			dtli.addRemoveListener(() => {
+				console.log('here');
+				if (this.lC.length() == 0) {
+					this.displayDomainList(this.hosts);
+				}
+			});
 		}
 	}
 
-	private getTabLiController(domainTab: chrome.tabs.Tab) {
+	private getTabLiController(domainTab: chrome.tabs.Tab): TabLiController {
 		const dtli = new TabLiController(
 			domainTab.title || domainTab.url || "Unnamed Tab",
 			"",
