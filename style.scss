@@ -45,7 +45,7 @@ header {
 		border-bottom: 1px solid rgb(204, 204, 204);
 		padding: 2px 4px;
 
-		&:hover {
+		&:hover,&.active {
 			&, & * {
 				text-decoration: underline;
 			}
@@ -124,6 +124,8 @@ header {
 
 #tab-list { 
 	@extend %vert-list;
+	max-height: 300px;
+	overflow: auto;
 }
 
 #misc-list {
