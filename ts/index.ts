@@ -1,5 +1,5 @@
 document.addEventListener('DOMContentLoaded', async () => {
-	const [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
+	const [tabs, currentWindow] = await Promise.all([crx.getAllTabs(), crx.getCurrentWindow()]);
 
 	const tabHeader = document.getElementById('tab-header') as HTMLHeadingElement;
 	const tabList = document.getElementById('tab-list') as HTMLUListElement;
@@ -9,12 +9,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const searchInput = document.getElementById('search-input') as HTMLInputElement;
 
 	btnMergeAll.addEventListener('click', async () => {
-		await mergeAllWindows(currentWindow, tabs);
+		await crx.mergeAllWindows(currentWindow, tabs);
 		window.close();
 	});
 
 	btnRemoveDupes.addEventListener('click', () => {
-		removeDupes(tabs);
+		crx.removeDupes(tabs);
 		window.close();
 	});
 

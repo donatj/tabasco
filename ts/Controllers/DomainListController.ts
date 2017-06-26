@@ -65,13 +65,13 @@ class DomainListController /*implements Controller*/ {
 
 				xxbtn.onClick((e) => {
 					e.stopPropagation();
-					closeTabs(hosts[h].tabs);
+					crx.closeTabs(hosts[h].tabs);
 					xxli.remove();
 				});
 
 				xxli.onClick(() => {
 					if (hosts[h].count == 1) {
-						focusTab(hosts[h].tabs[0]);
+						crx.focusTab(hosts[h].tabs[0]);
 						window.close();
 					} else {
 						this.displaySpecificDomain(hosts, h);
@@ -118,12 +118,12 @@ class DomainListController /*implements Controller*/ {
 
 		dcbtn.onClick((e) => {
 			e.stopPropagation();
-			closeTabs(domainTab);
+			crx.closeTabs(domainTab);
 			dtli.remove();
 		});
 
 		dtli.onClick(() => {
-			focusTab(domainTab);
+			crx.focusTab(domainTab);
 			window.close();
 		});
 
