@@ -15,4 +15,8 @@ class ListController implements Controller {
 		this.list.appendChild(tliC.getElement());
 	}
 
+	public length() : number {
+		return this.list.children.length;
+	}
+
 }
