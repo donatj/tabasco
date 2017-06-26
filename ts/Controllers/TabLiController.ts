@@ -32,6 +32,13 @@ class TabLiController implements Controller {
 
 	public remove() {
 		this.li.remove();
+		this.removeEmitter.trigger(this.li);
+	}
+
+	private removeEmitter = new EventEmitter<HTMLLIElement>();
+
+	public addRemoveListener(listener: Listener<HTMLLIElement>) {
+		this.removeEmitter.add(listener);
 	}
 
 	public onClick(listener: (this: HTMLEmbedElement, ev: MouseEvent) => any): void {
