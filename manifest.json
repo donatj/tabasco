@@ -2,12 +2,12 @@
 	"manifest_version": 2,
 	"name": "Tabasco",
 	"description": "Spicy Tab Managment",
-	"version": "0.1.0",
+	"version": "0.2.0",
 	"offline_enabled": true,
 	"homepage_url": "https://github.com/donatj/tabasco",
 	"browser_action": {
 		"default_icon": "icon128.png",
-		"default_title": "Send Tabs to Heaven",
+		"default_title": "Tabasco: Spicy Tab Managment",
 		"default_popup": "index.html"
 	},
 	"permissions": [
