@@ -1,4 +1,4 @@
-namespace crx { 
+namespace crx {
 
 	export async function getAllTabs(): Promise<chrome.tabs.Tab[]> {
 		const windows = await getAllWindows();
@@ -45,4 +45,5 @@ namespace crx {
 			chrome.tabs.remove(t.id);
 		}
 	}
+
 }

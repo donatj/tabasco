@@ -43,4 +43,35 @@ namespace crx {
 			}
 		}
 	}
+
+	export function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
+		tabs = tabs.sort((a, b) => {
+			if (a.active) {
+				return 1;
+			}
+			if (b.active) {
+				return -1
+			}
+
+			return 0;
+		})
+
+		const first = tabs.pop();
+		if (first && first.id) {
+			chrome.windows.create({
+				tabId: first.id
+			}, (e) => {
+				if (e) {
+					for (let t of tabs) {
+						if (!t.id) {
+							continue;
+						}
+						chrome.tabs.move(t.id, { windowId: e.id, index: -1 });
+					}
+
+					chrome.windows.update(e.id, { focused: true })
+				}
+			})
+		}
+	}
 }

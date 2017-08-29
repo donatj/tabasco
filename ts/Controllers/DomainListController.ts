@@ -10,6 +10,12 @@ class DomainListController /*implements Controller*/ {
 
 	private hosts: HostGroup = {};
 
+	private listChangeEmitter = new EventEmitter<{ context: "FullList" | "Partial" }>();
+
+	public addListChangeListener(l: Listener<{ context: "FullList" | "Partial" }>) {
+		this.listChangeEmitter.add(l);
+	}
+
 	public constructor(
 		protected tabs: chrome.tabs.Tab[],
 		protected lC: ListController,
@@ -18,6 +24,7 @@ class DomainListController /*implements Controller*/ {
 	) {
 		this.hosts = this.getGroupedTabs();
 		this.displayDomainList(this.hosts);
+		this.listChangeEmitter.trigger({ context: "FullList" });
 
 		let k = 0;
 		let last = '';
@@ -26,7 +33,9 @@ class DomainListController /*implements Controller*/ {
 			k = setTimeout(() => {
 				if (searchInput.value == "") {
 					console.log('displayDomainList');
+
 					this.displayDomainList(this.hosts);
+					this.listChangeEmitter.trigger({ context: "FullList" });
 					return;
 				}
 				if (last == searchInput.value) {
@@ -45,6 +54,7 @@ class DomainListController /*implements Controller*/ {
 				}
 
 				last = searchInput.value;
+				this.listChangeEmitter.trigger({ context: "Partial" });
 			}, 100);
 		};
 		searchInput.addEventListener('change', toe);
@@ -58,7 +68,7 @@ class DomainListController /*implements Controller*/ {
 
 		for (const h in hosts) {
 			if (hosts[h].count > 1) {
-				const xxli = new TabLiController(h, `${hosts[h].count} Tabs`, hosts[h].favicon || 'icon128.png');
+				const xxli = new TabLiController(h, `${hosts[h].count} Tabs`, hosts[h].favicon || 'icon128.png', hosts[h].tabs);
 				const xxbtn = new TabLiButtonController('x.png');
 
 				xxli.addTabButton(xxbtn);
@@ -75,6 +85,7 @@ class DomainListController /*implements Controller*/ {
 						window.close();
 					} else {
 						this.displaySpecificDomain(hosts, h);
+						this.listChangeEmitter.trigger({ context: "Partial" });
 					}
 				});
 
@@ -101,6 +112,7 @@ class DomainListController /*implements Controller*/ {
 				console.log('here');
 				if (this.lC.length() == 0) {
 					this.displayDomainList(this.hosts);
+					this.listChangeEmitter.trigger({ context: "FullList" });
 				}
 			});
 		}
@@ -111,6 +123,7 @@ class DomainListController /*implements Controller*/ {
 			domainTab.title || domainTab.url || "Unnamed Tab",
 			"",
 			domainTab.favIconUrl || 'icon128.png',
+			[domainTab]
 		);
 
 		const dcbtn = new TabLiButtonController('x.png');

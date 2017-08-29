@@ -1,7 +1,7 @@
 class TabLiController implements Controller {
 	protected li: HTMLLIElement = document.createElement('li');
 
-	constructor(textContent: string, subtextContent: string = "", icon: string = "") {
+	constructor(textContent: string, subtextContent: string = "", icon: string = "", protected tabs: chrome.tabs.Tab[]) {
 		const wrap = document.createElement('div');
 
 		const text = document.createElement('span');
@@ -43,5 +43,9 @@ class TabLiController implements Controller {
 
 	public onClick(listener: (this: HTMLEmbedElement, ev: MouseEvent) => any): void {
 		this.li.addEventListener('click', listener);
+	}
+
+	public getTabs() {
+		return this.tabs
 	}
 }
