@@ -59,7 +59,8 @@ namespace crx {
 		const first = tabs.pop();
 		if (first && first.id) {
 			chrome.windows.create({
-				tabId: first.id
+				tabId: first.id,
+				focused: false
 			}, (e) => {
 				if (e) {
 					for (let t of tabs) {
