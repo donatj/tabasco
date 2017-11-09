@@ -46,11 +46,11 @@ namespace crx {
 
 	export function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 		tabs = tabs.sort((a, b) => {
-			if (a.active) {
-				return 1;
+			if (a.highlighted) {
+				return -1;
 			}
-			if (b.active) {
-				return -1
+			if (b.highlighted) {
+				return 1
 			}
 
 			return 0;
