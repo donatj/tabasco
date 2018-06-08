@@ -7,8 +7,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const btnRemoveDupes = document.getElementById('btn-remove-dupes') as HTMLLIElement;
 	const btnMoveToNewWindow = document.getElementById('btn-move-to-new-window') as HTMLLIElement;
 
-	
-
 	const searchInput = document.getElementById('search-input') as HTMLInputElement;
 
 	btnMergeAll.addEventListener('click', async () => {
@@ -30,23 +28,23 @@ document.addEventListener('DOMContentLoaded', async () => {
 	searchInput.focus();
 
 	btnMoveToNewWindow.style.display = 'none';
-	dlc.addListChangeListener((e)=>{
-		if(e.context == "FullList") {
+	dlc.addListChangeListener((e) => {
+		if (e.context == "FullList") {
 			btnMoveToNewWindow.style.display = 'none';
-		}else{
+		} else {
 			btnMoveToNewWindow.style.display = '';
 		}
 	})
 
 	btnMoveToNewWindow.addEventListener('click', () => {
-		let tabs : chrome.tabs.Tab[] = [];
+		let tabs: chrome.tabs.Tab[] = [];
 		let lcs = lC.getTabLiControllers()
-		for(let i of lcs) {
-			for(let j of i.getTabs()) {
+		for (let i of lcs) {
+			for (let j of i.getTabs()) {
 				tabs.push(j)
 			}
 		}
-		
+
 		crx.newWindowWithTabs(tabs)
 	});
 });
