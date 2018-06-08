@@ -27,6 +27,8 @@ document.addEventListener('DOMContentLoaded', async () => {
 		tabs, lC, searchInput, tabHeader,
 	);
 
+	searchInput.focus();
+
 	btnMoveToNewWindow.style.display = 'none';
 	dlc.addListChangeListener((e)=>{
 		if(e.context == "FullList") {
