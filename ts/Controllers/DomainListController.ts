@@ -17,12 +17,13 @@ class DomainListController /*implements Controller*/ {
 	}
 
 	public constructor(
-		protected tabs: chrome.tabs.Tab[],
+		tabs: chrome.tabs.Tab[],
+
 		protected lC: ListController,
 		protected searchInput: HTMLInputElement,
 		protected tabHeader: HTMLHeadingElement,
 	) {
-		this.hosts = this.getGroupedTabs();
+		this.hosts = this.getGroupedTabs(tabs);
 		this.displayDomainList(this.hosts);
 		this.listChangeEmitter.trigger({ context: "FullList" });
 
@@ -111,8 +112,12 @@ class DomainListController /*implements Controller*/ {
 			dtli.addRemoveListener(() => {
 				console.log('here');
 				if (this.lC.length() == 0) {
-					this.displayDomainList(this.hosts);
-					this.listChangeEmitter.trigger({ context: "FullList" });
+					setTimeout(async () => {
+						let tabs = await crx.getAllTabs();
+						this.hosts = this.getGroupedTabs(tabs);
+						this.displayDomainList(this.hosts);
+						this.listChangeEmitter.trigger({ context: "FullList" });
+					}, 50); // this is a hack as we need to wait for chrome to cleanup itself
 				}
 			});
 		}
@@ -143,10 +148,10 @@ class DomainListController /*implements Controller*/ {
 		return dtli;
 	}
 
-	protected getGroupedTabs() {
+	protected getGroupedTabs(tabs: chrome.tabs.Tab[]) {
 		const hosts: HostGroup = {};
 
-		for (const t of this.tabs) {
+		for (const t of tabs) {
 			const a = document.createElement('a');
 			if (!t.url) {
 				continue;
