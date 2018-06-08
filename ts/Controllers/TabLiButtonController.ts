@@ -13,7 +13,7 @@ class TabLiButtonController implements Controller {
 		return this.button;
 	}
 
-	public onClick(listener: (this: HTMLEmbedElement, ev: MouseEvent) => any): void {
+	public onClick(listener: EventListener): void {
 		this.button.addEventListener('click', listener);
 	}
 }

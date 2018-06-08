@@ -41,7 +41,7 @@ class TabLiController implements Controller {
 		this.removeEmitter.add(listener);
 	}
 
-	public onClick(listener: (this: HTMLEmbedElement, ev: MouseEvent) => any): void {
+	public onClick(listener: EventListener): void {
 		this.li.addEventListener('click', listener);
 	}
 
