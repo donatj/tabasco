@@ -1,5 +1,5 @@
 import { EventEmitter, Listener } from "../EventEmitter";
-import { AbstractBaseController } from "./Controller";
+import { AbstractBaseController } from "./AbstractController";
 import { TabLiButtonController } from "./TabLiButtonController";
 
 export class TabLiController extends AbstractBaseController {

@@ -1,4 +1,4 @@
-import { AbstractBaseController } from "./Controller";
+import { AbstractBaseController } from "./AbstractController";
 
 export class TabLiButtonController extends AbstractBaseController {
 

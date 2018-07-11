@@ -1,4 +1,4 @@
-import { AbstractBaseController } from "./Controller";
+import { AbstractBaseController } from "./AbstractController";
 import { TabLiController } from "./TabLiController";
 
 export class ListController extends AbstractBaseController {

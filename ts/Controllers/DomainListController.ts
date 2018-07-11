@@ -1,6 +1,6 @@
 import { closeTabs, focusTab, getAllTabs } from "../chrome";
 import { EventEmitter, Listener } from "../EventEmitter";
-import { AbstractBaseController } from "./Controller";
+import { AbstractBaseController } from "./AbstractController";
 import { ListController } from "./ListController";
 import { TabLiButtonController } from "./TabLiButtonController";
 import { TabLiController } from "./TabLiController";
