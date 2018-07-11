@@ -1,7 +1,11 @@
-class TabLiController implements Controller {
-	protected li: HTMLLIElement = document.createElement('li');
+import { EventEmitter, Listener } from "../EventEmitter";
+import { AbstractBaseController } from "./Controller";
+import { TabLiButtonController } from "./TabLiButtonController";
+
+export class TabLiController extends AbstractBaseController {
 
 	constructor(textContent: string, subtextContent: string = "", icon: string = "", protected tabs: chrome.tabs.Tab[]) {
+		super(document.createElement('li'), 'tab-li');
 		const wrap = document.createElement('div');
 
 		const text = document.createElement('span');
@@ -19,33 +23,29 @@ class TabLiController implements Controller {
 			wrap.appendChild(small);
 		}
 
-		this.li.appendChild(wrap);
+		this.container.appendChild(wrap);
 	}
 
 	public addTabButton(btn: TabLiButtonController) {
-		this.li.appendChild(btn.getElement());
-	}
-
-	public getElement() {
-		return this.li;
+		this.container.appendChild(btn.getContainer());
 	}
 
 	public remove() {
-		this.li.remove();
-		this.removeEmitter.trigger(this.li);
+		this.container.remove();
+		this.removeEmitter.trigger(this.container);
 	}
 
-	private removeEmitter = new EventEmitter<HTMLLIElement>();
+	private removeEmitter = new EventEmitter<HTMLElement>();
 
-	public addRemoveListener(listener: Listener<HTMLLIElement>) {
+	public addRemoveListener(listener: Listener<HTMLElement>) {
 		this.removeEmitter.add(listener);
 	}
 
 	public onClick(listener: EventListener): void {
-		this.li.addEventListener('click', listener);
+		this.container.addEventListener('click', listener);
 	}
 
 	public getTabs() {
-		return this.tabs
+		return this.tabs;
 	}
 }

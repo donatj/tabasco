@@ -1,4 +1,11 @@
-interface HostGroup {
+import { closeTabs, focusTab, getAllTabs } from "../chrome";
+import { EventEmitter, Listener } from "../EventEmitter";
+import { AbstractBaseController } from "./Controller";
+import { ListController } from "./ListController";
+import { TabLiButtonController } from "./TabLiButtonController";
+import { TabLiController } from "./TabLiController";
+
+export interface HostGroup {
 	[key: string]: {
 		count: number,
 		favicon: string | undefined,
@@ -6,7 +13,7 @@ interface HostGroup {
 	};
 }
 
-class DomainListController /*implements Controller*/ {
+export class DomainListController extends AbstractBaseController {
 
 	private hosts: HostGroup = {};
 
@@ -23,6 +30,8 @@ class DomainListController /*implements Controller*/ {
 		protected searchInput: HTMLInputElement,
 		protected tabHeader: HTMLHeadingElement,
 	) {
+		super(document.createElement("div"), "domain-list");
+
 		this.hosts = this.getGroupedTabs(tabs);
 		this.displayDomainList(this.hosts);
 		this.listChangeEmitter.trigger({ context: "FullList" });
@@ -76,13 +85,13 @@ class DomainListController /*implements Controller*/ {
 
 				xxbtn.onClick((e) => {
 					e.stopPropagation();
-					crx.closeTabs(hosts[h].tabs);
+					closeTabs(hosts[h].tabs);
 					xxli.remove();
 				});
 
 				xxli.onClick(() => {
 					if (hosts[h].count == 1) {
-						crx.focusTab(hosts[h].tabs[0]);
+						focusTab(hosts[h].tabs[0]);
 						window.close();
 					} else {
 						this.displaySpecificDomain(hosts, h);
@@ -113,7 +122,7 @@ class DomainListController /*implements Controller*/ {
 				console.log('here');
 				if (this.lC.length() == 0) {
 					setTimeout(async () => {
-						let tabs = await crx.getAllTabs();
+						const tabs = await getAllTabs();
 						this.hosts = this.getGroupedTabs(tabs);
 						this.displayDomainList(this.hosts);
 						this.listChangeEmitter.trigger({ context: "FullList" });
@@ -128,7 +137,7 @@ class DomainListController /*implements Controller*/ {
 			domainTab.title || domainTab.url || "Unnamed Tab",
 			"",
 			domainTab.favIconUrl || 'icon128.png',
-			[domainTab]
+			[domainTab],
 		);
 
 		const dcbtn = new TabLiButtonController('x.png');
@@ -136,12 +145,12 @@ class DomainListController /*implements Controller*/ {
 
 		dcbtn.onClick((e) => {
 			e.stopPropagation();
-			crx.closeTabs(domainTab);
+			closeTabs(domainTab);
 			dtli.remove();
 		});
 
 		dtli.onClick(() => {
-			crx.focusTab(domainTab);
+			focusTab(domainTab);
 			window.close();
 		});
 

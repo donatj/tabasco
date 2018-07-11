@@ -1,19 +1,18 @@
-class TabLiButtonController implements Controller {
-	protected button: HTMLButtonElement = document.createElement('button');
+import { AbstractBaseController } from "./Controller";
+
+export class TabLiButtonController extends AbstractBaseController {
 
 	constructor(icon: string) {
+		super(document.createElement('button'), "tab-li-button");
+
 		const img = document.createElement('img');
 		img.src = icon;
 		img.width = 10;
 
-		this.button.appendChild(img);
-	}
-
-	public getElement() {
-		return this.button;
+		this.container.appendChild(img);
 	}
 
 	public onClick(listener: EventListener): void {
-		this.button.addEventListener('click', listener);
+		this.container.addEventListener('click', listener);
 	}
 }

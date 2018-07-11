@@ -1,5 +1,10 @@
-document.addEventListener('DOMContentLoaded', async () => {
-	const [tabs, currentWindow] = await Promise.all([crx.getAllTabs(), crx.getCurrentWindow()]);
+import { mergeAllWindows, newWindowWithTabs, removeDupes } from "./actions";
+import { getAllTabs, getCurrentWindow } from "./chrome";
+import { DomainListController } from "./Controllers/DomainListController";
+import { ListController } from "./Controllers/ListController";
+
+(async () => {
+	const [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
 
 	const tabHeader = document.getElementById('tab-header') as HTMLHeadingElement;
 	const tabList = document.getElementById('tab-list') as HTMLUListElement;
@@ -10,12 +15,12 @@ document.addEventListener('DOMContentLoaded', async () => {
 	const searchInput = document.getElementById('search-input') as HTMLInputElement;
 
 	btnMergeAll.addEventListener('click', async () => {
-		await crx.mergeAllWindows(currentWindow, tabs);
+		await mergeAllWindows(currentWindow, tabs);
 		window.close();
 	});
 
 	btnRemoveDupes.addEventListener('click', () => {
-		crx.removeDupes(tabs);
+		removeDupes(tabs);
 		window.close();
 	});
 
@@ -34,17 +39,17 @@ document.addEventListener('DOMContentLoaded', async () => {
 		} else {
 			btnMoveToNewWindow.style.display = '';
 		}
-	})
+	});
 
 	btnMoveToNewWindow.addEventListener('click', () => {
-		let tabs: chrome.tabs.Tab[] = [];
-		let lcs = lC.getTabLiControllers()
-		for (let i of lcs) {
-			for (let j of i.getTabs()) {
-				tabs.push(j)
+		const xtabs: chrome.tabs.Tab[] = [];
+		const lcs = lC.getTabLiControllers();
+		for (const i of lcs) {
+			for (const j of i.getTabs()) {
+				xtabs.push(j);
 			}
 		}
 
-		crx.newWindowWithTabs(tabs)
+		newWindowWithTabs(xtabs);
 	});
-});
+})();

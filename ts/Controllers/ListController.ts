@@ -1,12 +1,12 @@
-class ListController implements Controller {
+import { AbstractBaseController } from "./Controller";
+import { TabLiController } from "./TabLiController";
+
+export class ListController extends AbstractBaseController {
 
 	protected controllers: TabLiController[] = [];
 
 	public constructor(protected list: HTMLUListElement) {
-	}
-
-	public getElement() {
-		return this.list;
+		super(list, "list");
 	}
 
 	public empty() {
@@ -16,7 +16,7 @@ class ListController implements Controller {
 
 	public addTabLiController(tliC: TabLiController) {
 		this.controllers.push(tliC);
-		this.list.appendChild(tliC.getElement());
+		this.list.appendChild(tliC.getContainer());
 	}
 
 	public length(): number {
