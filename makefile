@@ -2,8 +2,10 @@
 
 VERSION = $(shell cat manifest.json | jq .version -r)
 
-build:
-	tsc
+build: style.css
+	./node_modules/.bin/tsc
+
+style.css: style.scss
 	sass style.scss:style.css
 
 zip:
