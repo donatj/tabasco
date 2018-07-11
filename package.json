@@ -12,6 +12,7 @@
     "@types/chrome": "0.0.69"
   },
   "devDependencies": {
+    "tslint": "^5.10.0",
     "typescript": "^2.9.2"
   }
 }
