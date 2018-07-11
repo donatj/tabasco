@@ -3,6 +3,6 @@
 
 *.css
 *.css.map
-*.js
+js/
 *.psd
 *.zip
