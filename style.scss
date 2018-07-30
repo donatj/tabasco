@@ -39,11 +39,13 @@ header {
 	margin-bottom: 3px;
 }
 
+$control: rgb(204, 204, 204);
+
 %list {
 	li {
 		line-height: 1.1em;
 		display: block;
-		border-bottom: 1px solid rgb(204, 204, 204);
+		border-bottom: 1px solid $control;
 		padding: 2px 4px;
 
 		&:hover,&.active {
@@ -142,5 +144,26 @@ header {
 		&:first-of-type {
 			border-left: none;
 		}
+	}
+}
+
+/* width */
+::-webkit-scrollbar {
+	width: .7em;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+	background: white;
+	border-left: 1px solid $control;
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+	background: #ccc;
+	// border-right: 1px solid white;
+	
+	&:hover {
+		background: #bfbfbf; 
 	}
 }
