@@ -8,7 +8,9 @@ enum SearchType {
 	not = "not",
 	// has = "has",
 	text = "text",
+
 	host = "host",
+	domain = "domain",
 }
 
 function isSearchPrefix(value: SearchType | string): value is SearchType {
@@ -51,6 +53,7 @@ export class SearchFilter {
 				// 	}
 				// 	break;
 				case SearchType.host:
+				case SearchType.domain:
 					filter = BuildHostFilter(token.value);
 					break;
 				case SearchType.not:
