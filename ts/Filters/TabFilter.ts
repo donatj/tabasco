@@ -34,13 +34,20 @@ export function BuildLogicalAndFilter(filters: TabFilter[]): TabFilter {
 	};
 }
 
-export function BuildHostFilter(host: string) {
+export function BuildHostFilter(host: string, exact: boolean = false) {
+	const esc = escapeRegExp(host);
+	const match = new RegExp(esc, 'i');
+
 	return function HostFilter(n: chrome.tabs.Tab): boolean {
 		if(!n.url) {
 			return false;
 		}
 
-		return urlparser(n.url).host == host;
+		if(exact) {
+			return urlparser(n.url).host == host;
+		}else{
+			return match.test(urlparser(n.url).host);
+		}
 	}
 }
 
