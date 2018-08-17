@@ -62,11 +62,11 @@ export function PinnedFilter(tab: chrome.tabs.Tab) : boolean {
 export function BuildTabIdFilter(n: number) {
 	return function TabIdFilter(tab: chrome.tabs.Tab) : boolean {
 		return tab.id == n;
-	}
+	};
 }
 
 export function BuildWindowIdFilter(n: number) {
 	return function WindowIdFilter(tab: chrome.tabs.Tab) : boolean {
 		return tab.windowId == n;
-	}
+	};
 }

@@ -1,8 +1,9 @@
-import { urlparser } from "../utils";
 import { SearchType } from "../Filters/SearchFilter";
+import { urlparser } from "../utils";
 
 export interface TabGroup {
 	[key: string]: {
+		title: string,
 		favicon: string | undefined,
 		tabs: chrome.tabs.Tab[],
 
@@ -16,7 +17,10 @@ export function anyGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 
 	let i = 0;
 	for (const t of tabs) {
-		hosts[(i++).toString()] = {
+		const key = (i++).toString();
+
+		hosts[key] = {
+			title: key,
 			favicon: t.favIconUrl,
 			tabs: [t],
 
@@ -32,10 +36,9 @@ export function byWindowGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 	const hosts: TabGroup = {};
 
 	for (const t of tabs) {
-		const key = `Window ${t.windowId}`;
-
-		if (!hosts[key]) {
-			hosts[key] = {
+		if (!hosts[t.windowId]) {
+			hosts[t.windowId] = {
+				title: `Window ${t.windowId}`,
 				favicon: t.favIconUrl,
 				tabs: [],
 
@@ -44,7 +47,7 @@ export function byWindowGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 			};
 		}
 
-		hosts[key].tabs.push(t);
+		hosts[t.windowId].tabs.push(t);
 	}
 
 	return hosts;
@@ -66,6 +69,7 @@ export function byDomainGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 
 		if (!hosts[a.host]) {
 			hosts[a.host] = {
+				title: `Host: ${a.host}`,
 				favicon: t.favIconUrl,
 				tabs: [],
 

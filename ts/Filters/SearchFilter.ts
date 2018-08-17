@@ -1,6 +1,6 @@
 
 import { TabFilter } from "../Controllers/DomainListController";
-import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTextMatchFilter, PinnedFilter, BuildTabIdFilter, BuildWindowIdFilter } from "./TabFilter";
+import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTabIdFilter, BuildTextMatchFilter, BuildWindowIdFilter, PinnedFilter } from "./TabFilter";
 
 export enum SearchType {
 	// no = "no",
