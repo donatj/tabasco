@@ -1,84 +1,104 @@
 import { closeTabs, focusTab, getAllTabs } from "../chrome";
-import { EventEmitter, Listener } from "../EventEmitter";
+import { AnyFilter } from "../Filters/TabFilter";
 import { AbstractBaseController } from "./AbstractController";
 import { ListController } from "./ListController";
 import { TabLiButtonController } from "./TabLiButtonController";
 import { TabLiController } from "./TabLiController";
+import { urlparser } from "../utils";
 
-export interface HostGroup {
+export interface TabGroup {
 	[key: string]: {
-		count: number,
 		favicon: string | undefined,
 		tabs: chrome.tabs.Tab[],
 	};
 }
 
-export class DomainListController extends AbstractBaseController {
+export type TabFilter = (tab: chrome.tabs.Tab) => boolean;
+export type TabGrouper = (tabs: chrome.tabs.Tab[], filter: TabFilter) => TabGroup;
 
-	private hosts: HostGroup = {};
+export function anyGrouper(tabs: chrome.tabs.Tab[], filter: TabFilter): TabGroup {
+	const hosts: TabGroup = {};
 
-	private listChangeEmitter = new EventEmitter<{ context: "FullList" | "Partial" }>();
+	var i = 0;
+	for (const t of tabs) {
+		if(!filter(t)) {
+			continue;
+		}
 
-	public addListChangeListener(l: Listener<{ context: "FullList" | "Partial" }>) {
-		this.listChangeEmitter.add(l);
+		hosts[(i++).toString()] = {
+			favicon: t.favIconUrl,
+			tabs: [ t ],
+		};
 	}
 
-	public constructor(
-		tabs: chrome.tabs.Tab[],
+	return hosts;
+}
 
-		protected lC: ListController,
-		protected searchInput: HTMLInputElement,
-		protected tabHeader: HTMLHeadingElement,
+export function byDomainGrouper(tabs: chrome.tabs.Tab[], filter: TabFilter): TabGroup {
+	const hosts: TabGroup = {};
+
+	for (const t of tabs) {
+		if(!filter(t)) {
+			continue;
+		}
+
+		if (!t.url) {
+			continue;
+		}
+
+		const a = urlparser(t.url);
+
+		if (a.protocol != 'http:' && a.protocol != 'https:') {
+			continue;
+		}
+
+		if (!hosts[a.host]) {
+			hosts[a.host] = {
+				favicon: t.favIconUrl,
+				tabs: [],
+			};
+		}
+
+		hosts[a.host].tabs.push(t);
+	}
+
+	return hosts;
+}
+
+export class DomainListController extends AbstractBaseController {
+
+	private tabGrouper: TabGrouper = byDomainGrouper;
+	private tabFilter: TabFilter = AnyFilter;
+
+	public constructor(
+		private lC: ListController,
+		private tabHeader: HTMLHeadingElement,
 	) {
 		super(document.createElement("div"), "domain-list");
 
-		this.hosts = this.getGroupedTabs(tabs);
-		this.displayDomainList(this.hosts);
-		this.listChangeEmitter.trigger({ context: "FullList" });
-
-		let k = 0;
-		let last = '';
-		const toe = () => {
-			clearTimeout(k);
-			k = setTimeout(() => {
-				if (searchInput.value == "") {
-					console.log('displayDomainList');
-
-					this.displayDomainList(this.hosts);
-					this.listChangeEmitter.trigger({ context: "FullList" });
-					return;
-				}
-				if (last == searchInput.value) {
-					return;
-				}
-				this.lC.empty();
-				this.tabHeader.textContent = 'Search…';
-				for (const t of tabs) {
-					if (
-						(t.title && t.title.toLocaleLowerCase().includes(searchInput.value.toLocaleLowerCase()))
-						|| (t.url && t.url.includes(searchInput.value))
-					) {
-						const tli = this.getTabLiController(t);
-						this.lC.addTabLiController(tli);
-					}
-				}
-
-				last = searchInput.value;
-				this.listChangeEmitter.trigger({ context: "Partial" });
-			}, 100);
-		};
-		searchInput.addEventListener('change', toe);
-		searchInput.addEventListener('keyup', toe);
-		searchInput.addEventListener('click', toe);
+		this.render();
+		// this.listChangeEmitter.trigger({ context: "FullList" });
 	}
 
-	private displayDomainList(hosts: HostGroup) {
+	public setTabGrouper(tg?: TabGrouper) {
+		this.tabGrouper = tg || byDomainGrouper;
+		this.render();
+	}
+
+	public setFilter(tabFilter?: TabFilter) {
+		this.tabFilter = tabFilter || AnyFilter;
+		this.render();
+	}
+
+	private async render() {
+		const hosts = this.tabGrouper(await getAllTabs(), this.tabFilter);
+
 		this.lC.empty();
 		this.tabHeader.textContent = 'Tabs';
 
 		for (const h in hosts) {
-			if (hosts[h].count > 1) {
-				const xxli = new TabLiController(h, `${hosts[h].count} Tabs`, hosts[h].favicon || 'icon128.png', hosts[h].tabs);
+			if (hosts[h].tabs.length > 1) {
+				const xxli = new TabLiController(h, `${hosts[h].tabs.length} Tabs`, hosts[h].favicon || 'icon128.png', hosts[h].tabs);
 				const xxbtn = new TabLiButtonController('x.png');
 
 				xxli.addTabButton(xxbtn);
@@ -90,12 +110,12 @@ export class DomainListController extends AbstractBaseController {
 				});
 
 				xxli.onClick(() => {
-					if (hosts[h].count == 1) {
+					if (hosts[h].tabs.length == 1) {
 						focusTab(hosts[h].tabs[0]);
 						window.close();
 					} else {
-						this.displaySpecificDomain(hosts, h);
-						this.listChangeEmitter.trigger({ context: "Partial" });
+						// this.displaySpecificDomain(hosts, h);
+						// this.listChangeEmitter.trigger({ context: "Partial" });
 					}
 				});
 
@@ -105,30 +125,6 @@ export class DomainListController extends AbstractBaseController {
 
 				this.lC.addTabLiController(xxli);
 			}
-		}
-	}
-
-	private displaySpecificDomain(hosts: HostGroup, h: string) {
-		const domainTabs = hosts[h].tabs;
-
-		this.tabHeader.textContent = h;
-
-		this.lC.empty();
-		for (const domainTab of domainTabs) {
-			const dtli = this.getTabLiController(domainTab);
-			this.lC.addTabLiController(dtli);
-
-			dtli.addRemoveListener(() => {
-				console.log('here');
-				if (this.lC.length() == 0) {
-					setTimeout(async () => {
-						const tabs = await getAllTabs();
-						this.hosts = this.getGroupedTabs(tabs);
-						this.displayDomainList(this.hosts);
-						this.listChangeEmitter.trigger({ context: "FullList" });
-					}, 50); // this is a hack as we need to wait for chrome to cleanup itself
-				}
-			});
 		}
 	}
 
@@ -155,34 +151,6 @@ export class DomainListController extends AbstractBaseController {
 		});
 
 		return dtli;
-	}
-
-	protected getGroupedTabs(tabs: chrome.tabs.Tab[]) {
-		const hosts: HostGroup = {};
-
-		for (const t of tabs) {
-			const a = document.createElement('a');
-			if (!t.url) {
-				continue;
-			}
-			a.href = t.url;
-
-			if (a.protocol != 'http:' && a.protocol != 'https:') {
-				continue;
-			}
-
-			if (!hosts[a.host]) {
-				hosts[a.host] = {
-					count: 0,
-					favicon: t.favIconUrl,
-					tabs: [],
-				};
-			}
-			hosts[a.host].count += 1;
-			hosts[a.host].tabs.push(t);
-		}
-
-		return hosts;
 	}
 
 }

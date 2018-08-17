@@ -2,6 +2,7 @@ import { mergeAllWindows, newWindowWithTabs, removeDupes } from "./actions";
 import { getAllTabs, getCurrentWindow } from "./chrome";
 import { DomainListController } from "./Controllers/DomainListController";
 import { ListController } from "./Controllers/ListController";
+import { SearchController } from "./Controllers/SearchController";
 
 (async () => {
 	const [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
@@ -26,13 +27,13 @@ import { ListController } from "./Controllers/ListController";
 
 	const lC = new ListController(tabList);
 
-	const dlc = new DomainListController(
-		tabs, lC, searchInput, tabHeader,
-	);
+	const dlC = new DomainListController(lC, tabHeader);
+	new SearchController(searchInput, dlC);
 
 	searchInput.focus();
 
 	btnMoveToNewWindow.style.display = 'none';
+	/*
 	dlc.addListChangeListener((e) => {
 		if (e.context == "FullList") {
 			btnMoveToNewWindow.style.display = 'none';
@@ -40,6 +41,7 @@ import { ListController } from "./Controllers/ListController";
 			btnMoveToNewWindow.style.display = '';
 		}
 	});
+	*/
 
 	btnMoveToNewWindow.addEventListener('click', () => {
 		const xtabs: chrome.tabs.Tab[] = [];

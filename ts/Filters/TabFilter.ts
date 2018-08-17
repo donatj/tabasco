@@ -1,0 +1,53 @@
+import { escapeRegExp, normalize } from "../text";
+import { urlparser } from "../utils";
+
+export type TabFilter = (tab: chrome.tabs.Tab) => boolean;
+
+export function AnyFilter(): boolean {
+	return true;
+}
+
+export function BuildTextMatchFilter(text: string): TabFilter {
+	const esc = escapeRegExp(normalize(text));
+	const match = new RegExp(esc, 'i');
+
+	return function(tab: chrome.tabs.Tab): boolean {
+		return match.test(normalize(`${tab.title} ${tab.url}`));
+	};
+}
+
+export function BuildLogicalNotFilter(filter: TabFilter) : TabFilter {
+	return function LogicalNotFilter(n: chrome.tabs.Tab): boolean {
+		return !filter(n);
+	};
+}
+
+export function BuildLogicalAndFilter(filters: TabFilter[]): TabFilter {
+	return function LogicalAndFilter(n: chrome.tabs.Tab): boolean {
+		for (const f of filters) {
+			if(!f(n)) {
+				return false;
+			}
+		}
+
+		return true;
+	};
+}
+
+export function BuildHostFilter(host: string) {
+	return function HostFilter(n: chrome.tabs.Tab): boolean {
+		if(!n.url) {
+			return false;
+		}
+
+		return urlparser(n.url).host == host;
+	}
+}
+
+export function AudibleFilter(tab: chrome.tabs.Tab) : boolean {
+	return tab.audible || false;
+}
+
+export function PinnedFilter(tab: chrome.tabs.Tab) : boolean {
+	return tab.pinned;
+}
