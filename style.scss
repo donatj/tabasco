@@ -69,6 +69,8 @@ $control: rgb(204, 204, 204);
 		}
 		
 		> div {
+			cursor: pointer;
+
 			padding: 2px 4px;
 			flex: 2;
 
@@ -136,6 +138,7 @@ $control: rgb(204, 204, 204);
 	@extend %list;
 	font-size: .9em;
 	display: flex;
+	cursor: pointer;
 	li {
 		padding: 10px;
 		flex: 1;
