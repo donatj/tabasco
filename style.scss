@@ -1,11 +1,13 @@
 html, body {
 	min-width: 300px;
-	padding: 0; 
+	padding: 0;
 	margin: 0;
+
 	// font-family: Arial, Helvetica, sans-serif;
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+	height: 0;
 
-	height: 0; // forces window to autosize
+	// forces window to autosize
 }
 
 ul, li {
@@ -48,10 +50,11 @@ $control: rgb(204, 204, 204);
 		border-bottom: 1px solid $control;
 		padding: 2px 4px;
 
-		&:hover,&.active {
+		&:hover, &.active {
 			&, & * {
 				text-decoration: underline;
 			}
+
 			background: -webkit-linear-gradient(top, rgb(254, 254, 254), rgb(230, 230, 230));
 		}
 	}
@@ -67,13 +70,11 @@ $control: rgb(204, 204, 204);
 		&:last-of-type {
 			border-bottom: none;
 		}
-		
+
 		> div {
 			cursor: pointer;
-
 			padding: 2px 4px;
 			flex: 2;
-
 			display: flex;
 			align-items: center;
 
@@ -107,7 +108,7 @@ $control: rgb(204, 204, 204);
 			border: none;
 			border-left: 1px solid rgb(204, 204, 204);
 			display: inline-block;
-			vertical-align: middle; 
+			vertical-align: middle;
 
 			&:hover {
 				background: #e2d5d5;
@@ -116,7 +117,7 @@ $control: rgb(204, 204, 204);
 	}
 }
 
-#domain-list { 
+#domain-list {
 	@extend %vert-list;
 
 	// li {
@@ -128,22 +129,26 @@ $control: rgb(204, 204, 204);
 // 	@extend %vert-list;
 // }
 
-#tab-list { 
+#tab-list {
 	@extend %vert-list;
+
 	max-height: 300px;
 	overflow: auto;
 }
 
 #misc-list {
 	@extend %list;
+
 	font-size: .9em;
 	display: flex;
 	cursor: pointer;
+
 	li {
 		padding: 10px;
 		flex: 1;
 		text-align: center;
 		border-left: 1px solid rgb(204, 204, 204);
+
 		&:first-of-type {
 			border-left: none;
 		}
@@ -160,13 +165,14 @@ $control: rgb(204, 204, 204);
 	background: white;
 	border-left: 1px solid $control;
 }
- 
+
 /* Handle */
 ::-webkit-scrollbar-thumb {
 	background: #ccc;
+
 	// border-right: 1px solid white;
-	
+
 	&:hover {
-		background: #bfbfbf; 
+		background: #bfbfbf;
 	}
 }
