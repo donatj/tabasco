@@ -28,6 +28,28 @@ export function anyGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 	return hosts;
 }
 
+export function byWindowGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
+	const hosts: TabGroup = {};
+
+	for (const t of tabs) {
+		const key = `Window ${t.windowId}`;
+
+		if (!hosts[key]) {
+			hosts[key] = {
+				favicon: t.favIconUrl,
+				tabs: [],
+
+				searchType: SearchType.window,
+				searchValue: `${t.windowId}`,
+			};
+		}
+
+		hosts[key].tabs.push(t);
+	}
+
+	return hosts;
+}
+
 export function byDomainGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 	const hosts: TabGroup = {};
 

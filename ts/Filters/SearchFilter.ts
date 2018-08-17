@@ -1,6 +1,6 @@
 
 import { TabFilter } from "../Controllers/DomainListController";
-import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTextMatchFilter, PinnedFilter, BuildTabIdFilter } from "./TabFilter";
+import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTextMatchFilter, PinnedFilter, BuildTabIdFilter, BuildWindowIdFilter } from "./TabFilter";
 
 export enum SearchType {
 	// no = "no",
@@ -13,6 +13,7 @@ export enum SearchType {
 	domain = "domain",
 
 	id = "id",
+	window = "window",
 }
 
 function isSearchPrefix(value: SearchType | string): value is SearchType {
@@ -62,9 +63,9 @@ export class SearchFilter {
 				case SearchType.is:
 					if (token.value == "any" || token.value == "all") {
 						filter = AnyFilter;
-					} else if(token.value == "audible") {
+					} else if (token.value == "audible") {
 						filter = AudibleFilter;
-					} else if(token.value == "pinned") {
+					} else if (token.value == "pinned") {
 						filter = PinnedFilter;
 					}
 
@@ -74,8 +75,14 @@ export class SearchFilter {
 					break;
 				case SearchType.id:
 					const n = parseInt(token.value, 10);
-					if(n) {
+					if (n) {
 						filter = BuildTabIdFilter(n);
+					}
+					break;
+				case SearchType.window:
+					const wID = parseInt(token.value, 10);
+					if (wID) {
+						filter = BuildWindowIdFilter(wID);
 					}
 					break;
 				case SearchType.text:

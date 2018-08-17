@@ -64,3 +64,9 @@ export function BuildTabIdFilter(n: number) {
 		return tab.id == n;
 	}
 }
+
+export function BuildWindowIdFilter(n: number) {
+	return function WindowIdFilter(tab: chrome.tabs.Tab) : boolean {
+		return tab.windowId == n;
+	}
+}
