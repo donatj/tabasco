@@ -1,6 +1,6 @@
 export interface URL {
-	protocol: string,
-	host: string,
+	protocol: string;
+	host: string;
 }
 
 export function urlparser(url : string) : URL {

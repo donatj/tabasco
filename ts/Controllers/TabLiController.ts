@@ -4,7 +4,7 @@ import { TabLiButtonController } from "./TabLiButtonController";
 
 export class TabLiController extends AbstractBaseController {
 
-	constructor(textContent: string, subtextContent: string = "", icon: string = "", protected tabs: chrome.tabs.Tab[]) {
+	constructor(textContent: string, subtextContent: string = "", icon: string = "") {
 		super(document.createElement('li'), 'tab-li');
 		const wrap = document.createElement('div');
 
@@ -45,7 +45,4 @@ export class TabLiController extends AbstractBaseController {
 		this.container.addEventListener('click', listener);
 	}
 
-	public getTabs() {
-		return this.tabs;
-	}
 }

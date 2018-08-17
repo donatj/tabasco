@@ -11,7 +11,7 @@ export function BuildTextMatchFilter(text: string): TabFilter {
 	const esc = escapeRegExp(normalize(text));
 	const match = new RegExp(esc, 'i');
 
-	return function(tab: chrome.tabs.Tab): boolean {
+	return function TextMatchFilter(tab: chrome.tabs.Tab): boolean {
 		return match.test(normalize(`${tab.title} ${tab.url}`));
 	};
 }
@@ -45,10 +45,10 @@ export function BuildHostFilter(host: string, exact: boolean = false) {
 
 		if(exact) {
 			return urlparser(n.url).host == host;
-		}else{
+		} else {
 			return match.test(urlparser(n.url).host);
 		}
-	}
+	};
 }
 
 export function AudibleFilter(tab: chrome.tabs.Tab) : boolean {

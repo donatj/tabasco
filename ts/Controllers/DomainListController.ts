@@ -1,10 +1,12 @@
 import { closeTabs, focusTab, getAllTabs } from "../chrome";
+import { SearchType } from "../Filters/SearchFilter";
 import { AnyFilter } from "../Filters/TabFilter";
+import { byDomainGrouper } from "../Groupers/TabGroupers";
 import { AbstractBaseController } from "./AbstractController";
 import { ListController } from "./ListController";
+import { SearchController } from "./SearchController";
 import { TabLiButtonController } from "./TabLiButtonController";
 import { TabLiController } from "./TabLiController";
-import { urlparser } from "../utils";
 
 export interface TabGroup {
 	[key: string]: {
@@ -14,61 +16,14 @@ export interface TabGroup {
 }
 
 export type TabFilter = (tab: chrome.tabs.Tab) => boolean;
-export type TabGrouper = (tabs: chrome.tabs.Tab[], filter: TabFilter) => TabGroup;
-
-export function anyGrouper(tabs: chrome.tabs.Tab[], filter: TabFilter): TabGroup {
-	const hosts: TabGroup = {};
-
-	var i = 0;
-	for (const t of tabs) {
-		if(!filter(t)) {
-			continue;
-		}
-
-		hosts[(i++).toString()] = {
-			favicon: t.favIconUrl,
-			tabs: [ t ],
-		};
-	}
-
-	return hosts;
-}
-
-export function byDomainGrouper(tabs: chrome.tabs.Tab[], filter: TabFilter): TabGroup {
-	const hosts: TabGroup = {};
-
-	for (const t of tabs) {
-		if(!filter(t)) {
-			continue;
-		}
-
-		if (!t.url) {
-			continue;
-		}
-
-		const a = urlparser(t.url);
-
-		if (a.protocol != 'http:' && a.protocol != 'https:') {
-			continue;
-		}
-
-		if (!hosts[a.host]) {
-			hosts[a.host] = {
-				favicon: t.favIconUrl,
-				tabs: [],
-			};
-		}
-
-		hosts[a.host].tabs.push(t);
-	}
-
-	return hosts;
-}
+export type TabGrouper = (tabs: chrome.tabs.Tab[]) => TabGroup;
 
 export class DomainListController extends AbstractBaseController {
 
 	private tabGrouper: TabGrouper = byDomainGrouper;
 	private tabFilter: TabFilter = AnyFilter;
+
+	private sC : SearchController | null = null;
 
 	public constructor(
 		private lC: ListController,
@@ -77,7 +32,10 @@ export class DomainListController extends AbstractBaseController {
 		super(document.createElement("div"), "domain-list");
 
 		this.render();
-		// this.listChangeEmitter.trigger({ context: "FullList" });
+	}
+
+	public setSearchController(sC: SearchController) {
+		this.sC = sC;
 	}
 
 	public setTabGrouper(tg?: TabGrouper) {
@@ -90,38 +48,47 @@ export class DomainListController extends AbstractBaseController {
 		this.render();
 	}
 
+	public async getTabs() {
+		const tabs = await getAllTabs();
+
+		return tabs.filter(this.tabFilter);
+	}
+
 	private async render() {
-		const hosts = this.tabGrouper(await getAllTabs(), this.tabFilter);
+		const grouped = this.tabGrouper( await this.getTabs() );
 
 		this.lC.empty();
 		this.tabHeader.textContent = 'Tabs';
 
-		for (const h in hosts) {
-			if (hosts[h].tabs.length > 1) {
-				const xxli = new TabLiController(h, `${hosts[h].tabs.length} Tabs`, hosts[h].favicon || 'icon128.png', hosts[h].tabs);
+		for (const h in grouped) {
+			if (grouped[h].tabs.length > 1) {
+				const xxli = new TabLiController(h, `${grouped[h].tabs.length} Tabs`, grouped[h].favicon || 'icon128.png');
 				const xxbtn = new TabLiButtonController('x.png');
 
 				xxli.addTabButton(xxbtn);
 
 				xxbtn.onClick((e) => {
 					e.stopPropagation();
-					closeTabs(hosts[h].tabs);
+					closeTabs(grouped[h].tabs);
 					xxli.remove();
 				});
 
 				xxli.onClick(() => {
-					if (hosts[h].tabs.length == 1) {
-						focusTab(hosts[h].tabs[0]);
+					if (grouped[h].tabs.length == 1) {
+						focusTab(grouped[h].tabs[0]);
 						window.close();
 					} else {
-						// this.displaySpecificDomain(hosts, h);
-						// this.listChangeEmitter.trigger({ context: "Partial" });
+						if(!this.sC) {
+							throw Error("missing search controller");
+						}
+
+						this.sC.setSearch(`${SearchType.host}:${h}`);
 					}
 				});
 
 				this.lC.addTabLiController(xxli);
 			} else {
-				const xxli = this.getTabLiController(hosts[h].tabs[0]);
+				const xxli = this.getTabLiController(grouped[h].tabs[0]);
 
 				this.lC.addTabLiController(xxli);
 			}
@@ -133,7 +100,6 @@ export class DomainListController extends AbstractBaseController {
 			domainTab.title || domainTab.url || "Unnamed Tab",
 			"",
 			domainTab.favIconUrl || 'icon128.png',
-			[domainTab],
 		);
 
 		const dcbtn = new TabLiButtonController('x.png');

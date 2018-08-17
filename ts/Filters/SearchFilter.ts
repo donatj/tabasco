@@ -1,8 +1,8 @@
 
 import { TabFilter } from "../Controllers/DomainListController";
-import { AnyFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTextMatchFilter, AudibleFilter, PinnedFilter, BuildHostFilter } from "./TabFilter";
+import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTextMatchFilter, PinnedFilter } from "./TabFilter";
 
-enum SearchType {
+export enum SearchType {
 	// no = "no",
 	is = "is",
 	not = "not",
@@ -60,9 +60,9 @@ export class SearchFilter {
 				case SearchType.is:
 					if (token.value == "any" || token.value == "all") {
 						filter = AnyFilter;
-					}else if(token.value == "audible") {
+					} else if(token.value == "audible") {
 						filter = AudibleFilter;
-					}else if(token.value == "pinned") {
+					} else if(token.value == "pinned") {
 						filter = PinnedFilter;
 					}
 

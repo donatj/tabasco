@@ -26,32 +26,20 @@ import { SearchController } from "./Controllers/SearchController";
 	});
 
 	const lC = new ListController(tabList);
-
 	const dlC = new DomainListController(lC, tabHeader);
-	new SearchController(searchInput, dlC);
+	const sC = new SearchController(searchInput, dlC);
+
+	dlC.setSearchController(sC);
 
 	searchInput.focus();
 
 	btnMoveToNewWindow.style.display = 'none';
-	/*
-	dlc.addListChangeListener((e) => {
-		if (e.context == "FullList") {
-			btnMoveToNewWindow.style.display = 'none';
-		} else {
-			btnMoveToNewWindow.style.display = '';
-		}
+
+	sC.addSearchListener((s) => {
+		btnMoveToNewWindow.style.display = s === null ? 'none' : '';
 	});
-	*/
 
-	btnMoveToNewWindow.addEventListener('click', () => {
-		const xtabs: chrome.tabs.Tab[] = [];
-		const lcs = lC.getTabLiControllers();
-		for (const i of lcs) {
-			for (const j of i.getTabs()) {
-				xtabs.push(j);
-			}
-		}
-
-		newWindowWithTabs(xtabs);
+	btnMoveToNewWindow.addEventListener('click', async () => {
+		newWindowWithTabs(await dlC.getTabs());
 	});
 })();
