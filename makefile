@@ -1,6 +1,6 @@
 .PHONY : build lint zip release clean
 
-VERSION = $(shell cat manifest.json | jq .version -r)
+VERSION = $(shell jq .version -r manifest.json)
 
 build: lint style.css
 	./node_modules/.bin/tsc
@@ -19,4 +19,4 @@ release: clean build zip
 clean:
 	-rm *.zip
 	-rm *.css
-	-rm index.js
+	-rm -rf js
