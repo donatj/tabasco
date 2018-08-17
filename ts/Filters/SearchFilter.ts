@@ -1,6 +1,6 @@
 
 import { TabFilter } from "../Controllers/DomainListController";
-import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTextMatchFilter, PinnedFilter } from "./TabFilter";
+import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTextMatchFilter, PinnedFilter, BuildTabIdFilter } from "./TabFilter";
 
 export enum SearchType {
 	// no = "no",
@@ -11,6 +11,8 @@ export enum SearchType {
 
 	host = "host",
 	domain = "domain",
+
+	id = "id",
 }
 
 function isSearchPrefix(value: SearchType | string): value is SearchType {
@@ -68,6 +70,12 @@ export class SearchFilter {
 
 					if (filter && token.type == SearchType.not) {
 						filter = BuildLogicalNotFilter(filter);
+					}
+					break;
+				case SearchType.id:
+					const n = parseInt(token.value, 10);
+					if(n) {
+						filter = BuildTabIdFilter(n);
 					}
 					break;
 				case SearchType.text:

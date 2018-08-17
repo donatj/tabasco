@@ -1,5 +1,15 @@
-import { TabGroup } from "../Controllers/DomainListController";
 import { urlparser } from "../utils";
+import { SearchType } from "../Filters/SearchFilter";
+
+export interface TabGroup {
+	[key: string]: {
+		favicon: string | undefined,
+		tabs: chrome.tabs.Tab[],
+
+		searchType: SearchType,
+		searchValue: string,
+	};
+}
 
 export function anyGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 	const hosts: TabGroup = {};
@@ -8,7 +18,10 @@ export function anyGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 	for (const t of tabs) {
 		hosts[(i++).toString()] = {
 			favicon: t.favIconUrl,
-			tabs: [ t ],
+			tabs: [t],
+
+			searchType: SearchType.id,
+			searchValue: `${t.id}`,
 		};
 	}
 
@@ -33,6 +46,9 @@ export function byDomainGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 			hosts[a.host] = {
 				favicon: t.favIconUrl,
 				tabs: [],
+
+				searchType: SearchType.host,
+				searchValue: a.host,
 			};
 		}
 

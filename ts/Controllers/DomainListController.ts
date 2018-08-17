@@ -1,19 +1,11 @@
 import { closeTabs, focusTab, getAllTabs } from "../chrome";
-import { SearchType } from "../Filters/SearchFilter";
 import { AnyFilter } from "../Filters/TabFilter";
-import { byDomainGrouper } from "../Groupers/TabGroupers";
+import { byDomainGrouper, TabGroup } from "../Groupers/TabGroupers";
 import { AbstractBaseController } from "./AbstractController";
 import { ListController } from "./ListController";
 import { SearchController } from "./SearchController";
 import { TabLiButtonController } from "./TabLiButtonController";
 import { TabLiController } from "./TabLiController";
-
-export interface TabGroup {
-	[key: string]: {
-		favicon: string | undefined,
-		tabs: chrome.tabs.Tab[],
-	};
-}
 
 export type TabFilter = (tab: chrome.tabs.Tab) => boolean;
 export type TabGrouper = (tabs: chrome.tabs.Tab[]) => TabGroup;
@@ -74,16 +66,11 @@ export class DomainListController extends AbstractBaseController {
 				});
 
 				xxli.onClick(() => {
-					if (grouped[h].tabs.length == 1) {
-						focusTab(grouped[h].tabs[0]);
-						window.close();
-					} else {
-						if(!this.sC) {
-							throw Error("missing search controller");
-						}
-
-						this.sC.setSearch(`${SearchType.host}:${h}`);
+					if(!this.sC) {
+						throw Error("missing search controller");
 					}
+
+					this.sC.setSearch(`${grouped[h].searchType}:${grouped[h].searchValue}`);
 				});
 
 				this.lC.addTabLiController(xxli);

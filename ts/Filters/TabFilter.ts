@@ -58,3 +58,9 @@ export function AudibleFilter(tab: chrome.tabs.Tab) : boolean {
 export function PinnedFilter(tab: chrome.tabs.Tab) : boolean {
 	return tab.pinned;
 }
+
+export function BuildTabIdFilter(n: number) {
+	return function TabIdFilter(tab: chrome.tabs.Tab) : boolean {
+		return tab.id == n;
+	}
+}
