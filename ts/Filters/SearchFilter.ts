@@ -57,9 +57,9 @@ export class SearchFilter {
 				case SearchType.is:
 					if (token.value == "any" || token.value == "all") {
 						filter = AnyFilter;
-					}else if(token.value = "audible") {
+					}else if(token.value == "audible") {
 						filter = AudibleFilter;
-					}else if(token.value = "pinned") {
+					}else if(token.value == "pinned") {
 						filter = PinnedFilter;
 					}
 
