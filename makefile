@@ -1,4 +1,4 @@
-.PHONY : build lint zip release clean
+.PHONY : build lint release clean
 
 VERSION = $(shell jq .version -r manifest.json)
 
@@ -8,15 +8,15 @@ build: lint style.css
 lint:
 	./node_modules/.bin/tslint -c tslint.json 'ts/**/*.ts' --fix
 
-style.css: style.scss
-	sass style.scss:style.css
-
-zip:
-	zip release-${VERSION}.zip manifest.json *.html *.css *.png *.js js *.md
-
-release: clean build zip
-
 clean:
 	-rm *.zip
 	-rm *.css
 	-rm -rf js
+
+style.css: style.scss
+	sass style.scss:style.css
+
+release-${VERSION}.zip: clean build
+	zip -r release-${VERSION}.zip manifest.json *.html *.css *.png *.js js *.md
+
+release: release-${VERSION}.zip
