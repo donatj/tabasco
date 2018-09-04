@@ -12,7 +12,7 @@ style.css: style.scss
 	sass style.scss:style.css
 
 zip:
-	zip release-${VERSION}.zip manifest.json *.html *.css *.png *.js *.md
+	zip release-${VERSION}.zip manifest.json *.html *.css *.png *.js js *.md
 
 release: clean build zip
 

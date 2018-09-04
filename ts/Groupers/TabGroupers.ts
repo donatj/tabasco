@@ -20,9 +20,9 @@ export function anyGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 		const key = (i++).toString();
 
 		hosts[key] = {
-			title: key,
 			favicon: t.favIconUrl,
 			tabs: [t],
+			title: key,
 
 			searchType: SearchType.id,
 			searchValue: `${t.id}`,
@@ -38,9 +38,9 @@ export function byWindowGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 	for (const t of tabs) {
 		if (!hosts[t.windowId]) {
 			hosts[t.windowId] = {
-				title: `Window ${t.windowId}`,
 				favicon: t.favIconUrl,
 				tabs: [],
+				title: `Window ${t.windowId}`,
 
 				searchType: SearchType.window,
 				searchValue: `${t.windowId}`,
@@ -69,9 +69,9 @@ export function byDomainGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 
 		if (!hosts[a.host]) {
 			hosts[a.host] = {
-				title: `Host: ${a.host}`,
 				favicon: t.favIconUrl,
 				tabs: [],
+				title: `Host: ${a.host}`,
 
 				searchType: SearchType.host,
 				searchValue: a.host,
