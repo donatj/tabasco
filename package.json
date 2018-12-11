@@ -9,10 +9,10 @@
   "author": "Jesse G Donat <donatj@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@types/chrome": "0.0.72"
+    "@types/chrome": "0.0.75"
   },
   "devDependencies": {
     "tslint": "^5.11.0",
-    "typescript": "^2.9.2"
+    "typescript": "^3.2.2"
   }
 }
