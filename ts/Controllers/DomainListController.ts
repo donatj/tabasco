@@ -87,6 +87,7 @@ export class DomainListController extends AbstractBaseController {
 			domainTab.title || domainTab.url || "Unnamed Tab",
 			"",
 			domainTab.favIconUrl || 'icon128.png',
+			domainTab.url
 		);
 
 		const dcbtn = new TabLiButtonController('x.png');

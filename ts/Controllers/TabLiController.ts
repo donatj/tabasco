@@ -4,8 +4,11 @@ import { TabLiButtonController } from "./TabLiButtonController";
 
 export class TabLiController extends AbstractBaseController {
 
-	constructor(textContent: string, subtextContent: string = "", icon: string = "") {
+	constructor(textContent: string, subtextContent: string = "", icon: string = "", title: string = "") {
 		super(document.createElement('li'), 'tab-li');
+
+		this.container.title = title;
+
 		const wrap = document.createElement('div');
 
 		const text = document.createElement('span');
