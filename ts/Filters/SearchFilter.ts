@@ -1,6 +1,6 @@
 
 import { TabFilter } from "../Controllers/DomainListController";
-import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTabIdFilter, BuildTextMatchFilter, BuildWindowIdFilter, PinnedFilter } from "./TabFilter";
+import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTabIdFilter, BuildTextMatchFilter, BuildWindowIdFilter, PinnedFilter, MutedFilter } from "./TabFilter";
 
 export enum SearchType {
 	// no = "no",
@@ -65,6 +65,8 @@ export class SearchFilter {
 						filter = AnyFilter;
 					} else if (token.value == "audible") {
 						filter = AudibleFilter;
+					} else if (token.value == "muted") {
+						filter = MutedFilter;
 					} else if (token.value == "pinned") {
 						filter = PinnedFilter;
 					}

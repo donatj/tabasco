@@ -55,6 +55,14 @@ export function AudibleFilter(tab: chrome.tabs.Tab) : boolean {
 	return tab.audible || false;
 }
 
+export function MutedFilter(tab: chrome.tabs.Tab) : boolean {
+	if(!tab.mutedInfo) {
+		return false;
+	}
+
+	return tab.mutedInfo.muted;
+}
+
 export function PinnedFilter(tab: chrome.tabs.Tab) : boolean {
 	return tab.pinned;
 }
