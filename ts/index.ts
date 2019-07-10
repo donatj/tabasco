@@ -29,6 +29,17 @@ import { SearchController } from "./Controllers/SearchController";
 	const dlC = new DomainListController(lC, tabHeader);
 	const sC = new SearchController(searchInput, dlC);
 
+	// Prevent thrashing. Probably move this into DomainListController
+	let renderTimeout = 0;
+	const rerender = () => {
+		clearTimeout(renderTimeout);
+		renderTimeout = setTimeout(() => { dlC.render(); }, 100);
+	};
+
+	chrome.tabs.onRemoved.addListener(rerender);
+	chrome.tabs.onCreated.addListener(rerender);
+	chrome.tabs.onUpdated.addListener(rerender);
+
 	dlC.setSearchController(sC);
 
 	searchInput.focus();

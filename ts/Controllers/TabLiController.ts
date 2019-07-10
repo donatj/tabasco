@@ -33,11 +33,6 @@ export class TabLiController extends AbstractBaseController {
 		this.container.appendChild(btn.getContainer());
 	}
 
-	public remove() {
-		this.container.remove();
-		this.removeEmitter.trigger(this.container);
-	}
-
 	private removeEmitter = new EventEmitter<HTMLElement>();
 
 	public addRemoveListener(listener: Listener<HTMLElement>) {

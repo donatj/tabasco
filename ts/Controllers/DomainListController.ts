@@ -46,7 +46,7 @@ export class DomainListController extends AbstractBaseController {
 		return tabs.filter(this.tabFilter);
 	}
 
-	private async render() {
+	public async render() {
 		const grouped = this.tabGrouper( await this.getTabs() );
 
 		this.lC.empty();
@@ -62,7 +62,6 @@ export class DomainListController extends AbstractBaseController {
 				xxbtn.onClick((e) => {
 					e.stopPropagation();
 					closeTabs(grouped[h].tabs);
-					xxli.remove();
 				});
 
 				xxli.onClick(() => {
@@ -87,7 +86,7 @@ export class DomainListController extends AbstractBaseController {
 			domainTab.title || domainTab.url || "Unnamed Tab",
 			"",
 			domainTab.favIconUrl || 'icon128.png',
-			domainTab.url
+			domainTab.url,
 		);
 
 		const dcbtn = new TabLiButtonController('x.png');
@@ -96,7 +95,6 @@ export class DomainListController extends AbstractBaseController {
 		dcbtn.onClick((e) => {
 			e.stopPropagation();
 			closeTabs(domainTab);
-			dtli.remove();
 		});
 
 		dtli.onClick(() => {
