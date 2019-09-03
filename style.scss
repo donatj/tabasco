@@ -7,8 +7,8 @@
 
 	@media (prefers-color-scheme: dark) {
 		--control-border: #37383A;
-		--grad-header-top: #{invert(rgb(254, 254, 254))};
-		--grad-header-bottom: #{invert(rgb(230, 230, 230))};
+		--grad-header-top: #292a2d;
+		--grad-header-bottom: #292a2d;
 		--background: #202124;
 		--danger: #{darken(#e2d5d5, 40%)};
 		&, * {
@@ -35,6 +35,7 @@ ul, li {
 }
 
 #search-input {
+	font-size: 1em;
 	width: 100%;
 	outline-width: 0;
 	border: none;
@@ -56,11 +57,6 @@ header {
 	display: block;
 	color: rgb(153, 153, 153);
 	line-height: 30px;
-}
-
-#domain-search {
-	width: 100%;
-	margin-bottom: 3px;
 }
 
 %list {
