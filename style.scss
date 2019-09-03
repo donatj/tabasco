@@ -1,12 +1,31 @@
+:root {
+	--control-border: rgb(204, 204, 204);
+	--grad-header-top: rgb(254, 254, 254);
+	--grad-header-bottom: rgb(230, 230, 230);
+	--background: white;
+	--danger: #e2d5d5;
+
+	@media (prefers-color-scheme: dark) {
+		--control-border: #37383A;
+		--grad-header-top: #{invert(rgb(254, 254, 254))};
+		--grad-header-bottom: #{invert(rgb(230, 230, 230))};
+		--background: #202124;
+		--danger: #{darken(#e2d5d5, 40%)};
+	}
+}
+
 html, body {
 	min-width: 300px;
 	padding: 0;
 	margin: 0;
 
-	// font-family: Arial, Helvetica, sans-serif;
 	font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
 	height: 0;
 
+	@media (prefers-color-scheme: dark) {
+		color: #9aa0a6;
+		background: var(--background);
+	}
 	// forces window to autosize
 }
 
@@ -21,13 +40,17 @@ ul, li {
 	outline-width: 0;
 	border: none;
 	padding: 8px;
-	border-bottom: 1px solid rgb(204, 204, 204);
+	border-bottom: 1px solid var(--control-border);
+
+	@media (prefers-color-scheme: dark) {
+		background: rgba(0, 0, 0, 0.22);
+	}
 }
 
 header {
 	text-align: center;
-	background: -webkit-linear-gradient(top, rgb(254, 254, 254), rgb(230, 230, 230));
-	border-bottom: 1px solid rgb(204, 204, 204);
+	background: -webkit-linear-gradient(top, var(--grad-header-top), var(--grad-header-bottom));
+	border-bottom: 1px solid var(--control-border);
 	font-size: 16px;
 	height: 30px;
 	padding: 0px 10px;
@@ -41,13 +64,11 @@ header {
 	margin-bottom: 3px;
 }
 
-$control: rgb(204, 204, 204);
-
 %list {
 	li {
 		line-height: 1.1em;
 		display: block;
-		border-bottom: 1px solid $control;
+		border-bottom: 1px solid var(--control-border);
 		padding: 2px 4px;
 
 		&:hover, &.active {
@@ -55,7 +76,7 @@ $control: rgb(204, 204, 204);
 				text-decoration: underline;
 			}
 
-			background: -webkit-linear-gradient(top, rgb(254, 254, 254), rgb(230, 230, 230));
+			background: -webkit-linear-gradient(top, var(--grad-header-top), var(--grad-header-bottom));
 		}
 	}
 }
@@ -104,14 +125,14 @@ $control: rgb(204, 204, 204);
 		}
 
 		> button {
-			background: white;
+			background: var(--grad-header-top);
 			border: none;
-			border-left: 1px solid rgb(204, 204, 204);
+			border-left: 1px solid var(--control-border);
 			display: inline-block;
 			vertical-align: middle;
 
 			&:hover {
-				background: #e2d5d5;
+				background: var(--danger);
 			}
 		}
 	}
@@ -119,15 +140,7 @@ $control: rgb(204, 204, 204);
 
 #domain-list {
 	@extend %vert-list;
-
-	// li {
-
-	// }
 }
-
-// #domain-tab-content {
-// 	@extend %vert-list;
-// }
 
 #tab-list {
 	@extend %vert-list;
@@ -147,7 +160,7 @@ $control: rgb(204, 204, 204);
 		padding: 10px;
 		flex: 1;
 		text-align: center;
-		border-left: 1px solid rgb(204, 204, 204);
+		border-left: 1px solid var(--control-border);
 
 		&:first-of-type {
 			border-left: none;
@@ -162,17 +175,21 @@ $control: rgb(204, 204, 204);
 
 /* Track */
 ::-webkit-scrollbar-track {
-	background: white;
-	border-left: 1px solid $control;
+	background: var(--background);
+	border-left: 1px solid var(--control-border);
 }
 
 /* Handle */
 ::-webkit-scrollbar-thumb {
 	background: #ccc;
-
-	// border-right: 1px solid white;
+	@media (prefers-color-scheme: dark) {
+		background: invert(#ccc);
+	}
 
 	&:hover {
 		background: #bfbfbf;
+		@media (prefers-color-scheme: dark) {
+			background: invert(#bfbfbf);
+		}
 	}
 }
