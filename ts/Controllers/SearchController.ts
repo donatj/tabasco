@@ -11,8 +11,7 @@ export class SearchController /* YAGNI for now extends AbstractBaseController */
 		private searchInput: HTMLInputElement,
 		private dlC: DomainListController,
 	) {
-
-		searchInput.addEventListener('input', (e) => {
+		searchInput.addEventListener('input', () => {
 			this.doSearch(searchInput.value);
 		});
 	}
