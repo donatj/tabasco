@@ -17,12 +17,10 @@ import { SearchController } from "./Controllers/SearchController";
 
 	btnMergeAll.addEventListener('click', async () => {
 		await mergeAllWindows(currentWindow, tabs);
-		window.close();
 	});
 
 	btnRemoveDupes.addEventListener('click', () => {
 		removeDupes(tabs);
-		window.close();
 	});
 
 	const lC = new ListController(tabList);
