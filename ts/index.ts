@@ -53,4 +53,10 @@ import { SearchController } from "./Controllers/SearchController";
 	btnMoveToNewWindow.addEventListener('click', async () => {
 		newWindowWithTabs(await dlC.getTabs());
 	});
+
+	window.addEventListener('keydown', (ev) => {
+		if( ev.keyCode === 27 && sC.getSearch() == '' ) {
+			window.close();
+		}
+	})
 })();

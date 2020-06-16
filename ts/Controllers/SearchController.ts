@@ -32,6 +32,10 @@ export class SearchController /* YAGNI for now extends AbstractBaseController */
 
 	}
 
+	public getSearch() : string {
+		return this.searchInput.value;
+	}
+
 	public setSearch(s: string) {
 		this.searchInput.value = s;
 		this.doSearch(s);
