@@ -1,5 +1,7 @@
 # Tabasco
 
+![Node.js CI](https://github.com/donatj/tabasco/workflows/Node.js%20CI/badge.svg)
+
 Tabasco is a spicy Chrome Extension to Manage Tabs!
 
 ## Tabasco will help you do the following with your tabs:
