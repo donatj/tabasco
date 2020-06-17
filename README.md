@@ -1,18 +1,19 @@
 # Tabasco
 
-Spicy Chrome Extension to Manage Tabs!
+Tabasco is a spicy Chrome Extension to Manage Tabs!
 
-## Tabasco will help you do the following:
+## Tabasco will help you do the following with your tabs:
 
 - Search Tabs
+- Move Search Results to a New Window
 - Merge All Windows
-- Removes Duplicate Tabs (by URL
+- Close Duplicate Tabs (by URL)
 - View All Tabs of a Single Domain
 - Close Groups of Tabs:
 	- Entire Domains
 	- Entire Search Results
 
-## Search Examples
+## Examples Searches
 
 By default the text of the tab title and URL will be searched.
 
