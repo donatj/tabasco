@@ -6,6 +6,7 @@ import { ListController } from "./ListController";
 import { SearchController } from "./SearchController";
 import { TabLiButtonController } from "./TabLiButtonController";
 import { TabLiController } from "./TabLiController";
+import { newWindowWithTabs } from "../actions";
 
 export type TabFilter = (tab: chrome.tabs.Tab) => boolean;
 export type TabGrouper = (tabs: chrome.tabs.Tab[]) => TabGroup;
@@ -15,7 +16,7 @@ export class DomainListController extends AbstractBaseController {
 	private tabGrouper: TabGrouper = byDomainGrouper;
 	private tabFilter: TabFilter = AnyFilter;
 
-	private sC : SearchController | null = null;
+	private sC: SearchController | null = null;
 
 	public constructor(
 		private lC: ListController,
@@ -47,7 +48,7 @@ export class DomainListController extends AbstractBaseController {
 	}
 
 	public async render() {
-		const grouped = this.tabGrouper( await this.getTabs() );
+		const grouped = this.tabGrouper(await this.getTabs());
 
 		this.lC.empty();
 		this.tabHeader.textContent = 'Tabs';
@@ -65,11 +66,16 @@ export class DomainListController extends AbstractBaseController {
 				});
 
 				xxli.onClick(() => {
-					if(!this.sC) {
+					if (!this.sC) {
 						throw Error("missing search controller");
 					}
 
 					this.sC.setSearch(`${grouped[h].searchType}:${grouped[h].searchValue}`);
+				});
+
+				xxli.onAuxClick(() => {
+					newWindowWithTabs(grouped[h].tabs);
+					window.close();
 				});
 
 				this.lC.addTabLiController(xxli);
@@ -99,6 +105,11 @@ export class DomainListController extends AbstractBaseController {
 
 		dtli.onClick(() => {
 			focusTab(domainTab);
+			window.close();
+		});
+
+		dtli.onAuxClick(() => {
+			newWindowWithTabs([domainTab]);
 			window.close();
 		});
 

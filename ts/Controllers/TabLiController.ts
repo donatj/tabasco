@@ -43,4 +43,8 @@ export class TabLiController extends AbstractBaseController {
 		this.container.addEventListener('click', listener);
 	}
 
+	public onAuxClick(listener: EventListener): void {
+		this.container.addEventListener('auxclick', listener);
+	}
+
 }
