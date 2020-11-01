@@ -9,7 +9,7 @@
   "author": "Jesse G Donat <donatj@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@types/chrome": "0.0.117"
+    "@types/chrome": "0.0.126"
   },
   "devDependencies": {
     "tslint": "^6.1.3",
