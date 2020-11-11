@@ -22,7 +22,9 @@ export async function mergeAllWindows(window: chrome.windows.Window, tabs: chrom
 	}
 }
 
-export function removeDupes(tabs: chrome.tabs.Tab[]) {
+export function findDupes(tabs: chrome.tabs.Tab[]) : chrome.tabs.Tab[] {
+	const duplicates : chrome.tabs.Tab[] = [];
+
 	const urls: string[] = [];
 	for (const t of tabs) {
 		const a = document.createElement('a');
@@ -37,10 +39,20 @@ export function removeDupes(tabs: chrome.tabs.Tab[]) {
 		}
 
 		if (urls.indexOf(t.url) > -1) {
-			closeTabs(t);
+			duplicates.push(t);
 		} else {
 			urls.push(t.url);
 		}
+	}
+
+	return duplicates;
+}
+
+export function removeDupes(tabs: chrome.tabs.Tab[]) {
+	const dupes = findDupes(tabs);
+
+	for( const t of dupes) {
+		closeTabs(t);
 	}
 }
 

@@ -1,8 +1,9 @@
-import { mergeAllWindows, newWindowWithTabs, removeDupes } from "./actions";
+import { findDupes, mergeAllWindows, newWindowWithTabs, removeDupes } from "./actions";
 import { getAllTabs, getCurrentWindow } from "./chrome";
 import { DomainListController } from "./Controllers/DomainListController";
 import { ListController } from "./Controllers/ListController";
 import { SearchController } from "./Controllers/SearchController";
+import { EventEmitter } from "./EventEmitter";
 
 (async () => {
 	const [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
@@ -27,16 +28,26 @@ import { SearchController } from "./Controllers/SearchController";
 	const dlC = new DomainListController(lC, tabHeader);
 	const sC = new SearchController(searchInput, dlC);
 
+	const TabChangeEmitter = new EventEmitter<void>();
+	TabChangeEmitter.add(() => {
+		dlC.render();
+	});
+
+	TabChangeEmitter.add(() => {
+		btnRemoveDupes.style.display = findDupes(tabs).length == 0 ? 'none' : '';
+	});
+	btnRemoveDupes.style.display = findDupes(tabs).length == 0 ? 'none' : '';
+
 	// Prevent thrashing. Probably move this into DomainListController
-	let renderTimeout = 0;
-	const rerender = () => {
-		clearTimeout(renderTimeout);
-		renderTimeout = setTimeout(() => { dlC.render(); }, 100);
+	let tabChangeTimeout = 0;
+	const tabchange = () => {
+		clearTimeout(tabChangeTimeout);
+		tabChangeTimeout = setTimeout(() => { TabChangeEmitter.trigger(); }, 100);
 	};
 
-	chrome.tabs.onRemoved.addListener(rerender);
-	chrome.tabs.onCreated.addListener(rerender);
-	chrome.tabs.onUpdated.addListener(rerender);
+	chrome.tabs.onRemoved.addListener(tabchange);
+	chrome.tabs.onCreated.addListener(tabchange);
+	chrome.tabs.onUpdated.addListener(tabchange);
 
 	dlC.setSearchController(sC);
 
@@ -53,8 +64,8 @@ import { SearchController } from "./Controllers/SearchController";
 	});
 
 	window.addEventListener('keydown', (ev) => {
-		if( ev.keyCode === 27 && sC.getSearch() == '' ) {
+		if (ev.keyCode === 27 && sC.getSearch() == '') {
 			window.close();
 		}
-	})
+	});
 })();
