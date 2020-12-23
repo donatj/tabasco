@@ -42,7 +42,7 @@ import { EventEmitter } from "./EventEmitter";
 	let tabChangeTimeout = 0;
 	const tabchange = () => {
 		clearTimeout(tabChangeTimeout);
-		tabChangeTimeout = setTimeout(() => { TabChangeEmitter.trigger(); }, 100);
+		tabChangeTimeout = setTimeout(() => { TabChangeEmitter.trigger(); }, 200);
 	};
 
 	chrome.tabs.onRemoved.addListener(tabchange);
