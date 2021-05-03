@@ -44,3 +44,9 @@ export function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
 		chrome.tabs.remove(t.id);
 	}
 }
+
+export function getTabGroup(groupId: number) {
+	return new Promise<chrome.tabGroups.TabGroup>((resolve) => {
+		chrome.tabGroups.get(groupId, resolve)
+	});
+}

@@ -4,10 +4,12 @@ import { TabLiButtonController } from "./TabLiButtonController";
 
 export class TabLiController extends AbstractBaseController {
 
-	constructor(textContent: string, subtextContent: string = "", icon: string = "", title: string = "") {
+	constructor(textContent: string, subtextContent: string = "", icon: string = "", title: string = "", color: string|null = null) {
 		super(document.createElement('li'), 'tab-li');
 
 		this.container.title = title;
+
+		this.container.style.borderLeft = '3px solid ' + (color || 'transparent');
 
 		const wrap = document.createElement('div');
 
