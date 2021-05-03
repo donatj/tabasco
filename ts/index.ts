@@ -5,7 +5,7 @@ import { ListController } from "./Controllers/ListController";
 import { SearchController } from "./Controllers/SearchController";
 import { EventEmitter } from "./EventEmitter";
 
-(async () => {
+export default async function index() {
 	const [tabs, currentWindow] = await Promise.all([getAllTabs(), getCurrentWindow()]);
 
 	const tabHeader = document.getElementById('tab-header') as HTMLHeadingElement;
@@ -68,4 +68,4 @@ import { EventEmitter } from "./EventEmitter";
 			window.close();
 		}
 	});
-})();
+}
