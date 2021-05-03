@@ -16,7 +16,7 @@ clean:
 style.css: style.scss
 	sass style.scss:style.css
 
+release: release-${VERSION}.zip
+
 release-${VERSION}.zip: clean build
 	zip -r release-${VERSION}.zip manifest.json *.html *.css *.png *.js js *.md
-
-release: release-${VERSION}.zip
