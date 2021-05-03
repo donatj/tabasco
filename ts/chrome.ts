@@ -28,7 +28,7 @@ export function getAllWindows(): Promise<chrome.windows.Window[]> {
 
 export function focusTab(tab: chrome.tabs.Tab) {
 	if (!tab.id) { return; }
-	chrome.tabs.update(tab.id, { selected: true });
+	chrome.tabs.update(tab.id, { highlighted: true });
 	chrome.windows.update(tab.windowId, { focused: true });
 }
 
