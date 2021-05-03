@@ -1,4 +1,4 @@
-import { closeTabs, focusTab, getAllTabs, getTabGroup } from "../chrome";
+import { closeTabs, focusTab, getAllTabs, TabGroupLookupMemoizer } from "../chrome";
 import { AnyFilter } from "../Filters/TabFilter";
 import { byDomainGrouper, TabGroup } from "../Groupers/TabGroupers";
 import { AbstractBaseController } from "./AbstractController";
@@ -53,6 +53,8 @@ export class DomainListController extends AbstractBaseController {
 		this.lC.empty();
 		this.tabHeader.textContent = 'Tabs';
 
+		const tgm = new TabGroupLookupMemoizer();
+
 		for (const h in grouped) {
 			if (grouped[h].tabs.length > 1) {
 				const xxli = new TabLiController(grouped[h].title, `${grouped[h].tabs.length} Tabs`, grouped[h].favicon || 'icon128.png');
@@ -80,19 +82,19 @@ export class DomainListController extends AbstractBaseController {
 
 				this.lC.addTabLiController(xxli);
 			} else {
-				const xxli = await this.getTabLiController(grouped[h].tabs[0]);
+				const xxli = await this.getTabLiController(grouped[h].tabs[0], tgm);
 
 				this.lC.addTabLiController(xxli);
 			}
 		}
 	}
 
-	private async getTabLiController(domainTab: chrome.tabs.Tab) {
-		let tg : chrome.tabGroups.TabGroup|null = null
-		if(domainTab.groupId !== chrome.tabGroups.TAB_GROUP_ID_NONE) {
-			tg = await getTabGroup(domainTab.groupId)
+	private async getTabLiController(domainTab: chrome.tabs.Tab, tgm: TabGroupLookupMemoizer) {
+		let tg: chrome.tabGroups.TabGroup | null = null
+		if (domainTab.groupId !== chrome.tabGroups.TAB_GROUP_ID_NONE) {
+			tg = await tgm.getTabGroup(domainTab.groupId)
 		}
-		
+
 		const dtli = new TabLiController(
 			(tg?.title ? `${tg.title} – ` : '') + (domainTab.title || domainTab.url || "Unnamed Tab"),
 			"",

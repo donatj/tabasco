@@ -50,3 +50,18 @@ export function getTabGroup(groupId: number) {
 		chrome.tabGroups.get(groupId, resolve)
 	});
 }
+
+export class TabGroupLookupMemoizer {
+
+	private memo: { [key: number]: chrome.tabGroups.TabGroup } = {}
+
+	async getTabGroup(groupId: number) {
+		if (this.memo[groupId]) {
+			return this.memo[groupId];
+		}
+		const tg = await getTabGroup(groupId)
+		this.memo[groupId] = tg
+
+		return tg
+	}
+}
