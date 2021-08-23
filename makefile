@@ -14,7 +14,7 @@ clean:
 	-rm -rf js
 
 style.css: style.scss
-	sass style.scss:style.css
+	./node_modules/.bin/sass style.scss:style.css
 
 release: release-${VERSION}.zip
 
