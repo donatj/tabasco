@@ -41,14 +41,14 @@ export class DomainListController extends AbstractBaseController {
 		this.render();
 	}
 
-	public async getTabs() {
+	public async getVisibleTabs() {
 		const tabs = await getAllTabs();
 
 		return tabs.filter(this.tabFilter);
 	}
 
 	public async render() {
-		const grouped = this.tabGrouper(await this.getTabs());
+		const grouped = this.tabGrouper(await this.getVisibleTabs());
 
 		this.lC.empty();
 		this.tabHeader.textContent = 'Tabs';

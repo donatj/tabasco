@@ -1,4 +1,4 @@
-import { closeTabs, getAllWindows } from "./chrome";
+import { closeTabs, getAllWindows } from "./chrome.js";
 
 export async function mergeAllWindows(window: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
 	const windows = await getAllWindows();
