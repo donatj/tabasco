@@ -22,7 +22,7 @@ export function BuildLogicalNotFilter(filter: TabFilter) : TabFilter {
 	};
 }
 
-export function BuildLogicalAndFilter(filters: TabFilter[]): TabFilter {
+export function BuildLogicalAndFilter(...filters: TabFilter[]): TabFilter {
 	return function LogicalAndFilter(n: chrome.tabs.Tab): boolean {
 		for (const f of filters) {
 			if(!f(n)) {

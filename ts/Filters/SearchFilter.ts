@@ -102,7 +102,7 @@ export class SearchFilter {
 			filters.push(filter);
 		}
 
-		return BuildLogicalAndFilter(filters);
+		return BuildLogicalAndFilter(...filters);
 	}
 
 	public tokenize(search: string): SearchToken[] {
