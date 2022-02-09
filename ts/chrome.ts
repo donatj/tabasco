@@ -12,27 +12,21 @@ export async function getAllTabs(): Promise<chrome.tabs.Tab[]> {
 	return tabs;
 }
 
-export function getCurrentWindow(): Promise<chrome.windows.Window> {
-	return new Promise<chrome.windows.Window>((resolve) => {
-		chrome.windows.getCurrent((currentWindow) => { resolve(currentWindow); });
-	});
+export function getCurrentWindow() {
+	return chrome.windows.getCurrent();
 }
 
-export function getAllWindows(): Promise<chrome.windows.Window[]> {
-	return new Promise<chrome.windows.Window[]>((resolve) => {
-		chrome.windows.getAll({ populate: true }, (windows) => {
-			resolve(windows);
-		});
-	});
+export function getAllWindows() {
+	return chrome.windows.getAll({ populate: true, windowTypes: ['normal', 'popup'] });
 }
 
-export function focusTab(tab: chrome.tabs.Tab) {
+export async function focusTab(tab: chrome.tabs.Tab) : Promise<void> {
 	if (!tab.id) { return; }
-	chrome.tabs.update(tab.id, { highlighted: true });
-	chrome.windows.update(tab.windowId, { focused: true });
+	await chrome.tabs.update(tab.id, { highlighted: true });
+	await chrome.windows.update(tab.windowId, { focused: true });
 }
 
-export function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
+export async function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
 	if (!Array.isArray(tabs)) {
 		tabs = [tabs];
 	}
@@ -41,14 +35,12 @@ export function closeTabs(tabs: chrome.tabs.Tab | chrome.tabs.Tab[]) {
 		if (!t.id) {
 			continue;
 		}
-		chrome.tabs.remove(t.id);
+		await chrome.tabs.remove(t.id);
 	}
 }
 
 export function getTabGroup(groupId: number) {
-	return new Promise<chrome.tabGroups.TabGroup>((resolve) => {
-		chrome.tabGroups.get(groupId, resolve)
-	});
+	return chrome.tabGroups.get(groupId);
 }
 
 export class TabGroupLookupMemoizer {

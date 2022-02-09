@@ -4,7 +4,7 @@ export async function mergeAllWindows(window: chrome.windows.Window, tabs: chrom
 	const windows = await getAllWindows();
 	const windowsById: { [i: number]: chrome.windows.Window } = {};
 	for (const w of windows) {
-		if(!w.id) {
+		if (!w.id) {
 			continue;
 		}
 		windowsById[w.id] = w;
@@ -25,8 +25,8 @@ export async function mergeAllWindows(window: chrome.windows.Window, tabs: chrom
 	}
 }
 
-export function findDupes(tabs: chrome.tabs.Tab[]) : chrome.tabs.Tab[] {
-	const duplicates : chrome.tabs.Tab[] = [];
+export function findDupes(tabs: chrome.tabs.Tab[]): chrome.tabs.Tab[] {
+	const duplicates: chrome.tabs.Tab[] = [];
 
 	const urls: string[] = [];
 	for (const t of tabs) {
@@ -51,15 +51,15 @@ export function findDupes(tabs: chrome.tabs.Tab[]) : chrome.tabs.Tab[] {
 	return duplicates;
 }
 
-export function removeDupes(tabs: chrome.tabs.Tab[]) {
+export async function removeDupes(tabs: chrome.tabs.Tab[]) {
 	const dupes = findDupes(tabs);
 
-	for( const t of dupes) {
-		closeTabs(t);
+	for (const t of dupes) {
+		await closeTabs(t);
 	}
 }
 
-export function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
+export async function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 	tabs = tabs.sort((a, b) => {
 		if (a.highlighted) {
 			return -1;
@@ -73,24 +73,22 @@ export function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 
 	const first = tabs.pop();
 	if (first && first.id) {
-		chrome.windows.create({
+		const e = await chrome.windows.create({
 			focused: false,
 			tabId: first.id,
-		}, (e) => {
-			if (e) {
-				if(!e.id) {
-					throw new Error('No window id');
-				}
-
-				for (const t of tabs) {
-					if (!t.id) {
-						continue;
-					}
-					chrome.tabs.move(t.id, { windowId: e.id, index: -1 });
-				}
-
-				chrome.windows.update(e.id, { focused: true });
-			}
 		});
+
+		if (!e.id) {
+			throw new Error('No window id');
+		}
+
+		for (const t of tabs) {
+			if (!t.id) {
+				continue;
+			}
+			await chrome.tabs.move(t.id, { windowId: e.id, index: -1 });
+		}
+
+		await chrome.windows.update(e.id, { focused: true });
 	}
 }

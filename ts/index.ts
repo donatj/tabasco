@@ -15,11 +15,11 @@ export default async function index() {
 	const searchInput = document.getElementById('search-input') as HTMLInputElement;
 
 	btnMergeAll.addEventListener('click', async () => {
-		mergeAllWindows(await getCurrentWindow(), await getAllTabs());
+		await mergeAllWindows(await getCurrentWindow(), await getAllTabs());
 	});
 
 	btnRemoveDupes.addEventListener('click', async () => {
-		removeDupes(await getAllTabs());
+		await removeDupes(await getAllTabs());
 	});
 
 	const lC = new ListController(tabList);
@@ -46,7 +46,7 @@ export default async function index() {
 	});
 
 	btnMoveToNewWindow.addEventListener('click', async () => {
-		newWindowWithTabs(await dlC.getVisibleTabs());
+		await newWindowWithTabs(await dlC.getVisibleTabs());
 	});
 
 	window.addEventListener('keydown', (ev) => {

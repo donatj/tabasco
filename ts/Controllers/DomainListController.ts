@@ -62,9 +62,9 @@ export class DomainListController extends AbstractBaseController {
 
 				xxli.addTabButton(xxbtn);
 
-				xxbtn.onClick((e) => {
+				xxbtn.onClick(async (e) => {
 					e.stopPropagation();
-					closeTabs(grouped[h].tabs);
+					await closeTabs(grouped[h].tabs);
 				});
 
 				xxli.onClick(() => {
@@ -75,8 +75,8 @@ export class DomainListController extends AbstractBaseController {
 					this.sC.setSearch(`${grouped[h].searchType}:${grouped[h].searchValue}`);
 				});
 
-				xxli.onAuxClick(() => {
-					newWindowWithTabs(grouped[h].tabs);
+				xxli.onAuxClick(async () => {
+					await newWindowWithTabs(grouped[h].tabs);
 					window.close();
 				});
 
@@ -106,18 +106,18 @@ export class DomainListController extends AbstractBaseController {
 		const dcbtn = new TabLiButtonController('x.png');
 		dtli.addTabButton(dcbtn);
 
-		dcbtn.onClick((e) => {
+		dcbtn.onClick(async (e) => {
 			e.stopPropagation();
-			closeTabs(domainTab);
+			await closeTabs(domainTab);
 		});
 
-		dtli.onClick(() => {
-			focusTab(domainTab);
+		dtli.onClick(async () => {
+			await focusTab(domainTab);
 			window.close();
 		});
 
-		dtli.onAuxClick(() => {
-			newWindowWithTabs([domainTab]);
+		dtli.onAuxClick(async () => {
+			await newWindowWithTabs([domainTab]);
 			window.close();
 		});
 
