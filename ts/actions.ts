@@ -4,6 +4,9 @@ export async function mergeAllWindows(window: chrome.windows.Window, tabs: chrom
 	const windows = await getAllWindows();
 	const windowsById: { [i: number]: chrome.windows.Window } = {};
 	for (const w of windows) {
+		if(!w.id) {
+			continue;
+		}
 		windowsById[w.id] = w;
 	}
 
@@ -75,6 +78,10 @@ export function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 			tabId: first.id,
 		}, (e) => {
 			if (e) {
+				if(!e.id) {
+					throw new Error('No window id');
+				}
+
 				for (const t of tabs) {
 					if (!t.id) {
 						continue;
