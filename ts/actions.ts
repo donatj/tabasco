@@ -60,35 +60,49 @@ export async function removeDupes(tabs: chrome.tabs.Tab[]) {
 }
 
 export async function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
+	const currentWindow = await chrome.windows.getCurrent()
+
 	tabs = tabs.sort((a, b) => {
-		if (a.highlighted) {
+		if (a.windowId == currentWindow.id && b.windowId != currentWindow.id) {
+			return 1;
+		}
+		if (a.windowId != currentWindow.id && b.windowId == currentWindow.id) {
 			return -1;
 		}
-		if (b.highlighted) {
+
+		if (a.highlighted) {
 			return 1;
+		}
+		if (b.highlighted) {
+			return -1;
 		}
 
 		return 0;
 	});
 
-	const first = tabs.pop();
-	if (first && first.id) {
-		const e = await chrome.windows.create({
-			focused: false,
-			tabId: first.id,
-		});
-
-		if (!e.id) {
-			throw new Error('No window id');
-		}
-
-		for (const t of tabs) {
-			if (!t.id) {
-				continue;
-			}
-			await chrome.tabs.move(t.id, { windowId: e.id, index: -1 });
-		}
-
-		await chrome.windows.update(e.id, { focused: true });
+	const first = tabs.shift();
+	if (!first || !first.id) {
+		return;
 	}
+
+	// The window needs a tab to start with, so we use the first tab
+	const e = await chrome.windows.create({
+		focused: false,
+		tabId: first.id,
+	});
+
+	if (!e.id) {
+		throw new Error('No window id');
+	}
+
+	const tabIds : number[] = [];
+	for (const t of tabs) {
+		if (!t.id) {
+			continue;
+		}
+		tabIds.push(t.id);
+	}
+
+	await chrome.tabs.move(tabIds, { windowId: e.id, index: -1 });
+	await chrome.windows.update(e.id, { focused: true });
 }
