@@ -95,7 +95,7 @@ export async function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 		throw new Error('No window id');
 	}
 
-	const tabIds : number[] = [];
+	const tabIds: number[] = [];
 	for (const t of tabs) {
 		if (!t.id) {
 			continue;
@@ -103,6 +103,8 @@ export async function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 		tabIds.push(t.id);
 	}
 
-	await chrome.tabs.move(tabIds, { windowId: e.id, index: -1 });
+	if (tabIds.length > 0) {
+		await chrome.tabs.move(tabIds, { windowId: e.id, index: -1 });
+	}
 	await chrome.windows.update(e.id, { focused: true });
 }

@@ -20,7 +20,7 @@ export function getAllWindows() {
 	return chrome.windows.getAll({ populate: true, windowTypes: ['normal', 'popup'] });
 }
 
-export async function focusTab(tab: chrome.tabs.Tab) : Promise<void> {
+export async function focusTab(tab: chrome.tabs.Tab): Promise<void> {
 	if (!tab.id) { return; }
 	await chrome.tabs.update(tab.id, { highlighted: true });
 	await chrome.windows.update(tab.windowId, { focused: true });
