@@ -31,9 +31,13 @@ export default async function index() {
 		dlC.render();
 	});
 
-	ts.eventEmitter.add((tabs) => {
+	function showHideRemoveDupes(tabs: chrome.tabs.Tab[]) {
 		btnRemoveDupes.style.display = findDupes(tabs).length == 0 ? 'none' : '';
+	}
+	ts.eventEmitter.add((tabs) => {
+		showHideRemoveDupes(tabs);
 	});
+	showHideRemoveDupes(await getAllTabs());
 
 	dlC.setSearchController(sC);
 
