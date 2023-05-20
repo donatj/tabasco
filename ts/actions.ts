@@ -25,7 +25,7 @@ export async function mergeAllWindows(window: chrome.windows.Window, tabs: chrom
 	}
 }
 
-export function findDupes(tabs: chrome.tabs.Tab[]): chrome.tabs.Tab[] {
+function findDupes(tabs: chrome.tabs.Tab[]): chrome.tabs.Tab[] {
 	const duplicates: chrome.tabs.Tab[] = [];
 
 	const urls: string[] = [];
@@ -107,4 +107,49 @@ export async function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 		await chrome.tabs.move(tabIds, { windowId: e.id, index: -1 });
 	}
 	await chrome.windows.update(e.id, { focused: true });
+}
+
+export class ActionBarManager {
+
+	private showMergeAll: boolean = false;
+	private showRemoveDupes: boolean = false;
+	private showMoveToNewWindow: boolean = false;
+
+	constructor(
+		private wrap: HTMLElement,
+		private btnMergeAll: HTMLLIElement,
+		private btnRemoveDupes: HTMLLIElement,
+		private btnMoveToNewWindow: HTMLLIElement
+	) {}
+
+	public updateTabs(tabs: chrome.tabs.Tab[]) {
+		this.showRemoveDupes = findDupes(tabs).length != 0;
+		this.showMergeAll = this.hasMultipleWindows(tabs);
+		this.render();
+	}
+
+	public updateSearch(search: string | null) {
+		this.showMoveToNewWindow = search !== null;
+		this.render();
+	}
+
+	public render() {
+		this.wrap.style.display = this.showMergeAll || this.showRemoveDupes || this.showMoveToNewWindow ? '' : 'none';
+		this.btnMergeAll.style.display = this.showMergeAll ? '' : 'none';
+		this.btnRemoveDupes.style.display = this.showRemoveDupes ? '' : 'none';
+		this.btnMoveToNewWindow.style.display = this.showMoveToNewWindow ? '' : 'none';
+	}
+
+	private hasMultipleWindows(tabs: chrome.tabs.Tab[]): boolean {
+		let lastWindowId = -1;
+		for (const tab of tabs) {
+			if (lastWindowId != tab.windowId && lastWindowId != -1) {
+				return true;
+			}
+
+			lastWindowId = tab.windowId
+		}
+
+		return false;
+	}
 }

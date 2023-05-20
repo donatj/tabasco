@@ -1,4 +1,4 @@
-import { findDupes, mergeAllWindows, newWindowWithTabs, removeDupes } from "./actions";
+import { ActionBarManager, mergeAllWindows, newWindowWithTabs, removeDupes } from "./actions";
 import { getAllTabs, getCurrentWindow } from "./chrome";
 import { DomainListController } from "./Controllers/DomainListController";
 import { ListController } from "./Controllers/ListController";
@@ -8,11 +8,14 @@ import { TabState } from "./Model/TabState";
 export default async function index() {
 	const tabHeader = document.getElementById('tab-header') as HTMLHeadingElement;
 	const tabList = document.getElementById('tab-list') as HTMLUListElement;
+
+	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+
+	const actionWrap = document.getElementById('action-section') as HTMLElement;
 	const btnMergeAll = document.getElementById('btn-merge-all') as HTMLLIElement;
 	const btnRemoveDupes = document.getElementById('btn-remove-dupes') as HTMLLIElement;
 	const btnMoveToNewWindow = document.getElementById('btn-move-to-new-window') as HTMLLIElement;
-
-	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+	const actionManager = new ActionBarManager(actionWrap, btnMergeAll, btnRemoveDupes, btnMoveToNewWindow);
 
 	btnMergeAll.addEventListener('click', async () => {
 		await mergeAllWindows(await getCurrentWindow(), await getAllTabs());
@@ -26,28 +29,19 @@ export default async function index() {
 	const dlC = new DomainListController(lC, tabHeader);
 	const sC = new SearchController(searchInput, dlC);
 
-	const ts = new TabState(chrome.tabs.onRemoved, chrome.tabs.onCreated, chrome.tabs.onUpdated);
+	const ts = new TabState(chrome.tabs.onRemoved, chrome.tabs.onCreated, chrome.tabs.onUpdated, chrome.tabs.onAttached);
 	ts.eventEmitter.add(() => {
 		dlC.render();
 	});
 
-	function showHideRemoveDupes(tabs: chrome.tabs.Tab[]) {
-		btnRemoveDupes.style.display = findDupes(tabs).length == 0 ? 'none' : '';
-	}
-	ts.eventEmitter.add((tabs) => {
-		showHideRemoveDupes(tabs);
-	});
-	showHideRemoveDupes(await getAllTabs());
+	ts.eventEmitter.add( actionManager.updateTabs.bind(actionManager) );
 
+	const initialTabs = await getAllTabs();
+	actionManager.updateTabs(initialTabs);
 	dlC.setSearchController(sC);
 
 	searchInput.focus();
-
-	btnMoveToNewWindow.style.display = 'none';
-
-	sC.addSearchListener((s) => {
-		btnMoveToNewWindow.style.display = s === null ? 'none' : '';
-	});
+	sC.addSearchListener( actionManager.updateSearch.bind(actionManager) );
 
 	btnMoveToNewWindow.addEventListener('click', async () => {
 		await newWindowWithTabs(await dlC.getVisibleTabs());
