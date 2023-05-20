@@ -1,7 +1,7 @@
 {
   "name": "tabasco",
-  "version": "1.0.0",
-  "description": "Chrome extension to murder tabs",
+  "version": "0.11.0",
+  "description": "Spicy Tab Managment - Search, sort and manage your tabs.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
