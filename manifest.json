@@ -1,7 +1,7 @@
 {
 	"manifest_version": 3,
 	"name": "Tabasco",
-	"description": "Spicy Tab Managment - Search, sort and manage your tabs.",
+	"description": "Spicy Tab Management - Search, sort and manage your tabs.",
 	"icons": {
 		"32": "icon32.png",
 		"48": "icon48.png",
@@ -12,7 +12,7 @@
 	"homepage_url": "https://github.com/donatj/tabasco",
 	"action": {
 		"default_icon": "icon128.png",
-		"default_title": "Tabasco: Spicy Tab Managment",
+		"default_title": "Tabasco: Spicy Tab Management",
 		"default_popup": "index.html"
 	},
 	"permissions": [
