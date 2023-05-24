@@ -1,6 +1,6 @@
 {
   "name": "tabasco",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "description": "Spicy Tab Management - Search, sort and manage your tabs.",
   "main": "index.js",
   "scripts": {
