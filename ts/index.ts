@@ -34,14 +34,14 @@ export default async function index() {
 		dlC.render();
 	});
 
-	ts.eventEmitter.add( actionManager.updateTabs.bind(actionManager) );
+	ts.eventEmitter.add(actionManager.updateTabs.bind(actionManager));
 
 	const initialTabs = await getAllTabs();
 	actionManager.updateTabs(initialTabs);
 	dlC.setSearchController(sC);
 
 	searchInput.focus();
-	sC.addSearchListener( actionManager.updateSearch.bind(actionManager) );
+	sC.addSearchListener(actionManager.updateSearch.bind(actionManager));
 
 	btnMoveToNewWindow.addEventListener('click', async () => {
 		await newWindowWithTabs(await dlC.getVisibleTabs());
@@ -50,6 +50,13 @@ export default async function index() {
 	window.addEventListener('keydown', (ev) => {
 		if (ev.keyCode === 27 && sC.getSearch() == '') {
 			window.close();
+		}
+	});
+
+	// Disable auto-scroll on Windows middle-click
+	window.addEventListener('mousedown', e => {
+		if (e.button === 1) {
+			e.preventDefault();
 		}
 	});
 }
