@@ -5,6 +5,14 @@ import { ListController } from "./Controllers/ListController";
 import { SearchController } from "./Controllers/SearchController";
 import { TabState } from "./Model/TabState";
 
+export enum AppMode {
+	Popup,
+	SideBar,
+}
+
+export const CurrentAppMode : AppMode = document.querySelector('html')
+	?.classList.contains('popup') ? AppMode.Popup : AppMode.SideBar;
+
 export default async function index() {
 	const tabHeader = document.getElementById('tab-header') as HTMLHeadingElement;
 	const tabList = document.getElementById('tab-list') as HTMLUListElement;

@@ -7,6 +7,7 @@ import { SearchController } from "./SearchController";
 import { TabLiButtonController } from "./TabLiButtonController";
 import { TabLiController } from "./TabLiController";
 import { newWindowWithTabs } from "../actions";
+import { AppMode, CurrentAppMode } from "../index";
 
 export type TabFilter = (tab: chrome.tabs.Tab) => boolean;
 export type TabGrouper = (tabs: chrome.tabs.Tab[]) => TabGroup;
@@ -77,7 +78,9 @@ export class DomainListController extends AbstractBaseController {
 
 				xxli.onAuxClick(async () => {
 					await newWindowWithTabs(grouped[h].tabs);
-					window.close();
+					if (CurrentAppMode === AppMode.Popup) {
+						window.close();
+					}
 				});
 
 				this.lC.addTabLiController(xxli);
@@ -113,12 +116,16 @@ export class DomainListController extends AbstractBaseController {
 
 		dtli.onClick(async () => {
 			await focusTab(domainTab);
-			window.close();
+			if (CurrentAppMode === AppMode.Popup) {
+				window.close();
+			}
 		});
 
 		dtli.onAuxClick(async () => {
 			await newWindowWithTabs([domainTab]);
-			window.close();
+			if (CurrentAppMode === AppMode.Popup) {
+				window.close();
+			}
 		});
 
 		return dtli;
