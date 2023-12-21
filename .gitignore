@@ -1,6 +1,9 @@
 /node_modules
 /.sass-cache
 
+/index.html
+/sidebar.html
+
 *.css
 *.css.map
 js/

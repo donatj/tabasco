@@ -3,7 +3,7 @@
 VERSION = $(shell jq .version -r manifest.json)
 DESCR = $(shell jq .description -r manifest.json)
 
-build: lint style.css
+build: lint style.css index.html sidebar.html
 	./node_modules/.bin/tsc
 
 lint:
@@ -17,9 +17,14 @@ clean:
 	-rm *.zip
 	-rm *.css
 	-rm -rf js
+	-rm index.html sidebar.html
 
 style.css: style.scss
 	./node_modules/.bin/sass style.scss:style.css
+
+index.html sidebar.html: template.html
+	PAGETYPE=popup   envsubst < template.html > index.html
+	PAGETYPE=sidebar envsubst < template.html > sidebar.html
 
 release: sync release-${VERSION}.zip
 
