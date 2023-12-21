@@ -15,8 +15,12 @@
 		"default_title": "Tabasco: Spicy Tab Management",
 		"default_popup": "index.html"
 	},
+	"side_panel": {
+		"default_path": "sidebar.html"
+	},
 	"permissions": [
 		"tabs",
-		"tabGroups"
+		"tabGroups",
+		"sidePanel"
 	]
 }

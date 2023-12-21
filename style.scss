@@ -83,7 +83,7 @@ header {
 		display: flex;
 		padding: 0;
 
-		&:last-of-type {
+		html.popup &:last-of-type {
 			border-bottom: none;
 		}
 
@@ -139,9 +139,11 @@ header {
 
 #tab-list {
 	@extend %vert-list;
-
-	max-height: 300px;
 	overflow: auto;
+
+	html.popup & {
+		max-height: 300px;
+	}
 }
 
 #misc-list {
