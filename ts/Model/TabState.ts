@@ -5,7 +5,7 @@ export class TabState {
 
 	public readonly eventEmitter = new EventEmitter<chrome.tabs.Tab[]>();
 
-	constructor(...events: chrome.events.Event<any>[]) {
+	constructor(...events: chrome.events.Event<() => void>[]) {
 		let timeout = 0;
 
 		for (const e of events) {

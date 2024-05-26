@@ -76,16 +76,20 @@ export class SearchFilter {
 					}
 					break;
 				case SearchType.id:
-					const n = parseInt(token.value, 10);
-					if (n) {
-						filter = BuildTabIdFilter(n);
-					}
+					(() => {
+						const n = parseInt(token.value, 10);
+						if (n) {
+							filter = BuildTabIdFilter(n);
+						}
+					})();
 					break;
 				case SearchType.window:
-					const wID = parseInt(token.value, 10);
-					if (wID) {
-						filter = BuildWindowIdFilter(wID);
-					}
+					(() => {
+						const wID = parseInt(token.value, 10);
+						if (wID) {
+							filter = BuildWindowIdFilter(wID);
+						}
+					})();
 					break;
 				case SearchType.text:
 					filter = BuildTextMatchFilter(token.value);

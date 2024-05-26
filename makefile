@@ -4,10 +4,10 @@ VERSION = $(shell jq .version -r manifest.json)
 DESCR = $(shell jq .description -r manifest.json)
 
 build: lint style.css index.html sidebar.html
-	./node_modules/.bin/tsc
+	npx tsc
 
 lint:
-	./node_modules/.bin/tslint -c tslint.json 'ts/**/*.ts' --fix
+	npx eslint ts/**/*.ts
 
 sync:
 	jq --arg V "${VERSION}" --arg D "${DESCR}" '.version = $$V | .description = $$D' -r package.json > package.json.tmp
