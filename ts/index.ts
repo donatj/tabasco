@@ -18,6 +18,7 @@ export default async function index() {
 	const tabList = document.getElementById('tab-list') as HTMLUListElement;
 
 	const searchInput = document.getElementById('search-input') as HTMLInputElement;
+	const btnOpenSidebar = document.getElementById('btn-open-sidebar') as HTMLButtonElement;
 
 	const actionWrap = document.getElementById('action-section') as HTMLElement;
 	const btnMergeAll = document.getElementById('btn-merge-all') as HTMLLIElement;
@@ -66,5 +67,13 @@ export default async function index() {
 		if (e.button === 1) {
 			e.preventDefault();
 		}
+	});
+
+	btnOpenSidebar.addEventListener('click', async () => {
+		await chrome.sidePanel.open({
+			windowId: (await chrome.windows.getCurrent()).id || 0,
+		});
+
+		window.close();
 	});
 }

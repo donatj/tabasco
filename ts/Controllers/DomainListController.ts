@@ -61,7 +61,7 @@ export class DomainListController extends AbstractBaseController {
 		for (const h in grouped) {
 			if (grouped[h].tabs.length > 1) {
 				const xxli = new TabLiController(grouped[h].title, `${grouped[h].tabs.length} Tabs`, grouped[h].favicon || 'icon128.png');
-				const xxbtn = new TabLiButtonController('x.png');
+				const xxbtn = new TabLiButtonController('x.png', `Close ${grouped[h].tabs.length} tabs`);
 
 				xxli.addTabButton(xxbtn);
 
@@ -108,7 +108,7 @@ export class DomainListController extends AbstractBaseController {
 			tg?.color,
 		);
 
-		const dcbtn = new TabLiButtonController('x.png');
+		const dcbtn = new TabLiButtonController('x.png', 'Close ' + JSON.stringify(domainTab.title));
 		dtli.addTabButton(dcbtn);
 
 		dcbtn.onClick(async (e) => {
