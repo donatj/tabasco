@@ -1,13 +1,13 @@
 {
 	"manifest_version": 3,
-	"name": "Tabasco",
+	"name": "Tabasco: Advanced Tab Search & Management",
 	"description": "Spicy Tab Management - Search, sort and manage your tabs.",
 	"icons": {
 		"32": "icon32.png",
 		"48": "icon48.png",
 		"128": "icon128.png"
 	},
-	"version": "0.12.1",
+	"version": "0.12.2",
 	"offline_enabled": true,
 	"homepage_url": "https://github.com/donatj/tabasco",
 	"action": {
