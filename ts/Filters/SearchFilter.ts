@@ -1,5 +1,5 @@
 
-import { TabFilter } from "../Controllers/DomainListController";
+import type { TabFilter } from "../Controllers/DomainListController";
 import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTabIdFilter, BuildTextMatchFilter, BuildWindowIdFilter, MutedFilter, PinnedFilter } from "./TabFilter";
 
 export enum SearchType {

@@ -1,9 +1,10 @@
 import { closeTabs, focusTab, getAllTabs, TabGroupLookupMemoizer } from "../chrome";
 import { AnyFilter } from "../Filters/TabFilter";
-import { byDomainGrouper, TabGroup } from "../Groupers/TabGroupers";
+import type { TabGroup } from "../Groupers/TabGroupers";
+import { byDomainGrouper } from "../Groupers/TabGroupers";
 import { AbstractBaseController } from "./AbstractController";
-import { ListController } from "./ListController";
-import { SearchController } from "./SearchController";
+import type { ListController } from "./ListController";
+import type { SearchController } from "./SearchController";
 import { TabLiButtonController } from "./TabLiButtonController";
 import { TabLiController } from "./TabLiController";
 import { newWindowWithTabs } from "../actions";
@@ -15,6 +16,7 @@ export type TabGrouper = (tabs: chrome.tabs.Tab[]) => TabGroup;
 export class DomainListController extends AbstractBaseController {
 
 	private tabGrouper: TabGrouper = byDomainGrouper;
+
 	private tabFilter: TabFilter = AnyFilter;
 
 	private sC: SearchController | null = null;
@@ -93,9 +95,9 @@ export class DomainListController extends AbstractBaseController {
 	}
 
 	private async getTabLiController(domainTab: chrome.tabs.Tab, tgm: TabGroupLookupMemoizer) {
-		let tg: chrome.tabGroups.TabGroup | null = null
+		let tg: chrome.tabGroups.TabGroup | null = null;
 		if (domainTab.groupId !== chrome.tabGroups.TAB_GROUP_ID_NONE) {
-			tg = await tgm.getTabGroup(domainTab.groupId)
+			tg = await tgm.getTabGroup(domainTab.groupId);
 		}
 
 		const dtli = new TabLiController(
@@ -103,7 +105,7 @@ export class DomainListController extends AbstractBaseController {
 			"",
 			domainTab.favIconUrl || 'icon128.png',
 			domainTab.url,
-			tg?.color
+			tg?.color,
 		);
 
 		const dcbtn = new TabLiButtonController('x.png');

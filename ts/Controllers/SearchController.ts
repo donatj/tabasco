@@ -1,7 +1,8 @@
-import { EventEmitter, Listener } from "../EventEmitter";
+import type { Listener } from "../EventEmitter";
+import { EventEmitter } from "../EventEmitter";
 import { SearchFilter } from "../Filters/SearchFilter";
 import { anyGrouper } from "../Groupers/TabGroupers";
-import { DomainListController } from "./DomainListController";
+import type { DomainListController } from "./DomainListController";
 
 export class SearchController /* YAGNI for now extends AbstractBaseController */ {
 
@@ -32,7 +33,7 @@ export class SearchController /* YAGNI for now extends AbstractBaseController */
 
 	}
 
-	public getSearch() : string {
+	public getSearch(): string {
 		return this.searchInput.value;
 	}
 

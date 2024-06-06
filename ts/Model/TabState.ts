@@ -13,7 +13,7 @@ export class TabState {
 				clearTimeout(timeout);
 				timeout = setTimeout(async () => {
 					this.eventEmitter.trigger(
-						await getAllTabs()
+						await getAllTabs(),
 					);
 				}, 200);
 			});
