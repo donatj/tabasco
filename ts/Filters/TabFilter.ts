@@ -16,7 +16,7 @@ export function BuildTextMatchFilter(text: string): TabFilter {
 	};
 }
 
-export function BuildLogicalNotFilter(filter: TabFilter) : TabFilter {
+export function BuildLogicalNotFilter(filter: TabFilter): TabFilter {
 	return function LogicalNotFilter(n: chrome.tabs.Tab): boolean {
 		return !filter(n);
 	};
@@ -25,7 +25,7 @@ export function BuildLogicalNotFilter(filter: TabFilter) : TabFilter {
 export function BuildLogicalAndFilter(...filters: TabFilter[]): TabFilter {
 	return function LogicalAndFilter(n: chrome.tabs.Tab): boolean {
 		for (const f of filters) {
-			if(!f(n)) {
+			if (!f(n)) {
 				return false;
 			}
 		}
@@ -39,11 +39,11 @@ export function BuildHostFilter(host: string, exact: boolean = false) {
 	const match = new RegExp(esc, 'i');
 
 	return function HostFilter(n: chrome.tabs.Tab): boolean {
-		if(!n.url) {
+		if (!n.url) {
 			return false;
 		}
 
-		if(exact) {
+		if (exact) {
 			return urlparser(n.url).host == host;
 		} else {
 			return match.test(urlparser(n.url).host);
@@ -51,30 +51,30 @@ export function BuildHostFilter(host: string, exact: boolean = false) {
 	};
 }
 
-export function AudibleFilter(tab: chrome.tabs.Tab) : boolean {
+export function AudibleFilter(tab: chrome.tabs.Tab): boolean {
 	return tab.audible || false;
 }
 
-export function MutedFilter(tab: chrome.tabs.Tab) : boolean {
-	if(!tab.mutedInfo) {
+export function MutedFilter(tab: chrome.tabs.Tab): boolean {
+	if (!tab.mutedInfo) {
 		return false;
 	}
 
 	return tab.mutedInfo.muted;
 }
 
-export function PinnedFilter(tab: chrome.tabs.Tab) : boolean {
+export function PinnedFilter(tab: chrome.tabs.Tab): boolean {
 	return tab.pinned;
 }
 
 export function BuildTabIdFilter(n: number) {
-	return function TabIdFilter(tab: chrome.tabs.Tab) : boolean {
+	return function TabIdFilter(tab: chrome.tabs.Tab): boolean {
 		return tab.id == n;
 	};
 }
 
 export function BuildWindowIdFilter(n: number) {
-	return function WindowIdFilter(tab: chrome.tabs.Tab) : boolean {
+	return function WindowIdFilter(tab: chrome.tabs.Tab): boolean {
 		return tab.windowId == n;
 	};
 }

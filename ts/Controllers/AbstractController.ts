@@ -1,6 +1,6 @@
 export interface ControllerInterface {
-	attach(elm: HTMLElement): void;
-	getContainer(): HTMLElement;
+	attach: (elm: HTMLElement) => void;
+	getContainer: () => HTMLElement;
 }
 
 export abstract class AbstractBaseController implements ControllerInterface {

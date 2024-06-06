@@ -3,12 +3,12 @@ import { urlparser } from "../utils";
 
 export interface TabGroup {
 	[key: string]: {
-		title: string,
-		favicon: string | undefined,
-		tabs: chrome.tabs.Tab[],
+		title: string;
+		favicon: string | undefined;
+		tabs: chrome.tabs.Tab[];
 
-		searchType: SearchType,
-		searchValue: string,
+		searchType: SearchType;
+		searchValue: string;
 	};
 }
 

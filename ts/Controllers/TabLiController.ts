@@ -1,10 +1,11 @@
-import { EventEmitter, Listener } from "../EventEmitter";
+import type { Listener } from "../EventEmitter";
+import { EventEmitter } from "../EventEmitter";
 import { AbstractBaseController } from "./AbstractController";
-import { TabLiButtonController } from "./TabLiButtonController";
+import type { TabLiButtonController } from "./TabLiButtonController";
 
 export class TabLiController extends AbstractBaseController {
 
-	constructor(textContent: string, subtextContent: string = "", icon: string = "", title: string = "", color: string|null = null) {
+	constructor(textContent: string, subtextContent: string = "", icon: string = "", title: string = "", color: string | null = null) {
 		super(document.createElement('li'), 'tab-li');
 
 		this.container.title = title;
