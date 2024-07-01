@@ -14,7 +14,7 @@
   "devDependencies": {
     "@stylistic/eslint-plugin-ts": "^2.1.0",
     "eslint": "^8.57.0",
-    "sass": "^1.77.4",
+    "sass": "^1.77.6",
     "typescript": "^5.4.5",
     "typescript-eslint": "^7.11.0"
   }
