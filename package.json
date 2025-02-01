@@ -12,7 +12,7 @@
     "@types/chrome": "^0.0.279"
   },
   "devDependencies": {
-    "@stylistic/eslint-plugin-ts": "^2.1.0",
+    "@stylistic/eslint-plugin-ts": "^3.0.1",
     "eslint": "^9.13.0",
     "sass": "^1.80.5",
     "typescript": "^5.6.2",
