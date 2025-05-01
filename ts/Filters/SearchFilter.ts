@@ -137,7 +137,12 @@ export class SearchFilter {
 			const type = parts[0];
 			if (isSearchPrefix(type)) {
 				const value = this.processString(str.substr(type.length + 1));
-				return { neg, type, value };
+
+				return {
+					neg,
+					type,
+					value,
+				};
 			}
 		}
 
