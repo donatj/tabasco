@@ -1,4 +1,4 @@
-import { ActionBarManager, mergeAllWindows, newWindowWithTabs, removeDupes } from "./actions";
+import { ActionBarManager, mergeAllWindows, moveTabsToWindow, newWindowWithTabs, removeDupes } from "./actions";
 import { getAllTabs, getCurrentWindow } from "./chrome";
 import { DomainListController } from "./Controllers/DomainListController";
 import { ListController } from "./Controllers/ListController";
@@ -24,7 +24,8 @@ export default async function index() {
 	const btnMergeAll = document.getElementById('btn-merge-all') as HTMLLIElement;
 	const btnRemoveDupes = document.getElementById('btn-remove-dupes') as HTMLLIElement;
 	const btnMoveToNewWindow = document.getElementById('btn-move-to-new-window') as HTMLLIElement;
-	const actionManager = new ActionBarManager(actionWrap, btnMergeAll, btnRemoveDupes, btnMoveToNewWindow);
+	const btnAdopt = document.getElementById('btn-adopt') as HTMLLIElement;
+	const actionManager = new ActionBarManager(actionWrap, btnMergeAll, btnRemoveDupes, btnMoveToNewWindow, btnAdopt);
 
 	btnMergeAll.addEventListener('click', async () => {
 		await mergeAllWindows(await getCurrentWindow(), await getAllTabs());
@@ -54,6 +55,10 @@ export default async function index() {
 
 	btnMoveToNewWindow.addEventListener('click', async () => {
 		await newWindowWithTabs(await dlC.getVisibleTabs());
+	});
+
+	btnAdopt.addEventListener('click', async () => {
+		await moveTabsToWindow(await chrome.windows.getCurrent(), await dlC.getVisibleTabs());
 	});
 
 	window.addEventListener('keydown', (ev) => {

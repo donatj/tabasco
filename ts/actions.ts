@@ -59,6 +59,22 @@ export async function removeDupes(tabs: chrome.tabs.Tab[]) {
 	}
 }
 
+export async function moveTabsToWindow(window: chrome.windows.Window, tabs: chrome.tabs.Tab[]) {
+	if (!window.id) {
+		throw new Error('No window id');
+	}
+
+	const tabIds = tabs
+		.filter((t) => t.id !== undefined)
+		.map((t) => t.id as number);
+
+	if (tabIds.length > 0) {
+		await chrome.tabs.move(tabIds, { windowId: window.id, index: -1 });
+	}
+
+	await chrome.windows.update(window.id, { focused: true });
+}
+
 export async function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 	const currentWindow = await chrome.windows.getCurrent()
 
@@ -111,33 +127,35 @@ export async function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 
 export class ActionBarManager {
 
-	private showMergeAll: boolean = false;
-	private showRemoveDupes: boolean = false;
-	private showMoveToNewWindow: boolean = false;
+	private multipleWindows: boolean = false;
+	private dupesExist: boolean = false;
+	private isSearching: boolean = false;
 
 	constructor(
 		private wrap: HTMLElement,
 		private btnMergeAll: HTMLLIElement,
 		private btnRemoveDupes: HTMLLIElement,
-		private btnMoveToNewWindow: HTMLLIElement
+		private btnMoveToNewWindow: HTMLLIElement,
+		private btnAdopt: HTMLLIElement,
 	) {}
 
 	public updateTabs(tabs: chrome.tabs.Tab[]) {
-		this.showRemoveDupes = findDupes(tabs).length != 0;
-		this.showMergeAll = this.hasMultipleWindows(tabs);
+		this.dupesExist = findDupes(tabs).length != 0;
+		this.multipleWindows = this.hasMultipleWindows(tabs);
 		this.render();
 	}
 
 	public updateSearch(search: string | null) {
-		this.showMoveToNewWindow = search !== null;
+		this.isSearching = search !== null;
 		this.render();
 	}
 
 	public render() {
-		this.wrap.style.display = this.showMergeAll || this.showRemoveDupes || this.showMoveToNewWindow ? '' : 'none';
-		this.btnMergeAll.style.display = this.showMergeAll ? '' : 'none';
-		this.btnRemoveDupes.style.display = this.showRemoveDupes ? '' : 'none';
-		this.btnMoveToNewWindow.style.display = this.showMoveToNewWindow ? '' : 'none';
+		this.wrap.style.display = this.multipleWindows || this.dupesExist || this.isSearching ? '' : 'none';
+		this.btnMergeAll.style.display = (!this.isSearching && this.multipleWindows) ? '' : 'none';
+		this.btnRemoveDupes.style.display = (!this.isSearching && this.dupesExist) ? '' : 'none';
+		this.btnMoveToNewWindow.style.display = this.isSearching ? '' : 'none';
+		this.btnAdopt.style.display = this.isSearching ? '' : 'none';
 	}
 
 	private hasMultipleWindows(tabs: chrome.tabs.Tab[]): boolean {
