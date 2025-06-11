@@ -1,3 +1,4 @@
+@use "sass:color";
 :root {
 	--control-border: rgb(204, 204, 204);
 	--grad-header-top: rgb(254, 254, 254);
@@ -10,7 +11,7 @@
 		--grad-header-top: #292a2d;
 		--grad-header-bottom: #292a2d;
 		--background: #202124;
-		--danger: #{darken(#e2d5d5, 40%)};
+		--danger: #{color.adjust(#e2d5d5, $lightness: -40%)};
 		&,
 		* {
 			color: rgb(232, 234, 237);
@@ -252,13 +253,13 @@ header {
 ::-webkit-scrollbar-thumb {
 	background: #ccc;
 	@media (prefers-color-scheme: dark) {
-		background: invert(#ccc);
+		background: color.invert(#ccc);
 	}
 
 	&:hover {
 		background: #bfbfbf;
 		@media (prefers-color-scheme: dark) {
-			background: invert(#bfbfbf);
+			background: color.invert(#bfbfbf);
 		}
 	}
 }
