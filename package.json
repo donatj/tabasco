@@ -15,7 +15,7 @@
     "@stylistic/eslint-plugin-ts": "^4.4.0",
     "eslint": "^9.13.0",
     "sass": "^1.89.1",
-    "typescript": "^5.8.2",
+    "typescript": "^5.8.3",
     "typescript-eslint": "^8.11.0"
   }
 }
