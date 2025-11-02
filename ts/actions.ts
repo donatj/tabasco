@@ -107,7 +107,7 @@ export async function newWindowWithTabs(tabs: chrome.tabs.Tab[]) {
 		tabId: first.id,
 	});
 
-	if (!e.id) {
+	if (!e || !e.id) {
 		throw new Error('No window id');
 	}
 
