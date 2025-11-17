@@ -74,7 +74,7 @@ export function byDomainGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 				title: `Host: ${a.host}`,
 
 				searchType: SearchType.host,
-				searchValue: a.host,
+				searchValue: `=${a.host}`,
 			};
 		}
 

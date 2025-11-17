@@ -57,7 +57,12 @@ export class SearchFilter {
 				// 	break;
 				case SearchType.host:
 				case SearchType.domain:
-					filter = BuildHostFilter(token.value);
+					if (token.value.indexOf('=') === 0 ) {
+						filter = BuildHostFilter(token.value.substring(1), true);
+					} else {
+						filter = BuildHostFilter(token.value, false);
+					}
+
 					break;
 				case SearchType.not:
 				case SearchType.is:
