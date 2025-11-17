@@ -5,7 +5,7 @@ DESCR = $(shell jq .description -r manifest.json)
 
 @PHONY: build
 build: lint style.css index.html sidebar.html
-	npx tsc
+	npx rollup -c
 
 @PHONY: fix
 fix: lint-fix
