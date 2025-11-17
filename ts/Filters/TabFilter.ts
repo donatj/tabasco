@@ -1,5 +1,4 @@
 import { escapeRegExp, normalize } from "../text";
-import { urlparser } from "../utils";
 
 export type TabFilter = (tab: chrome.tabs.Tab) => boolean;
 
@@ -44,9 +43,9 @@ export function BuildHostFilter(host: string, exact: boolean = false) {
 		}
 
 		if (exact) {
-			return urlparser(n.url).host == host;
+			return new URL(n.url).host == host;
 		} else {
-			return match.test(urlparser(n.url).host);
+			return match.test(new URL(n.url).host);
 		}
 	};
 }

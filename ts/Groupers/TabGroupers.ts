@@ -1,5 +1,4 @@
 import { SearchType } from "../Filters/SearchFilter";
-import { urlparser } from "../utils";
 
 export interface TabGroup {
 	[key: string]: {
@@ -61,7 +60,7 @@ export function byDomainGrouper(tabs: chrome.tabs.Tab[]): TabGroup {
 			continue;
 		}
 
-		const a = urlparser(t.url);
+		const a = new URL(t.url);
 
 		if (a.protocol != 'http:' && a.protocol != 'https:') {
 			continue;
