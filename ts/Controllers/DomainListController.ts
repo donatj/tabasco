@@ -51,10 +51,11 @@ export class DomainListController extends AbstractBaseController {
 	}
 
 	public async render() {
-		const grouped = this.tabGrouper(await this.getVisibleTabs());
+		const tabs = await this.getVisibleTabs();
+		const grouped = this.tabGrouper(tabs);
 
 		this.lC.empty();
-		this.tabHeader.textContent = 'Tabs';
+		this.tabHeader.textContent = `Tabs (${tabs.length})`;
 
 		const tgm = new TabGroupLookupMemoizer();
 
