@@ -66,6 +66,22 @@ export function PinnedFilter(tab: chrome.tabs.Tab): boolean {
 	return tab.pinned;
 }
 
+export function HighlightedFilter(tab: chrome.tabs.Tab): boolean {
+	return tab.highlighted;
+}
+
+export function ActiveFilter(tab: chrome.tabs.Tab): boolean {
+	return tab.active;
+}
+
+export function DiscardedFilter(tab: chrome.tabs.Tab): boolean {
+	return tab.discarded;
+}
+
+export function FrozenFilter(tab: chrome.tabs.Tab): boolean {
+	return tab.frozen;
+}
+
 export function BuildTabIdFilter(n: number) {
 	return function TabIdFilter(tab: chrome.tabs.Tab): boolean {
 		return tab.id == n;

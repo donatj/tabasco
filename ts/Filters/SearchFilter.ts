@@ -1,6 +1,6 @@
 
 import type { TabFilter } from "../Controllers/DomainListController";
-import { AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTabIdFilter, BuildTextMatchFilter, BuildWindowIdFilter, MutedFilter, PinnedFilter } from "./TabFilter";
+import { ActiveFilter, AnyFilter, AudibleFilter, BuildHostFilter, BuildLogicalAndFilter, BuildLogicalNotFilter, BuildTabIdFilter, BuildTextMatchFilter, BuildWindowIdFilter, DiscardedFilter, FrozenFilter, HighlightedFilter, MutedFilter, PinnedFilter } from "./TabFilter";
 
 export enum SearchType {
 	// no = "no",
@@ -74,6 +74,14 @@ export class SearchFilter {
 						filter = MutedFilter;
 					} else if (token.value == "pinned") {
 						filter = PinnedFilter;
+					} else if (token.value == "highlighted" || token.value == "selected") {
+						filter = HighlightedFilter;
+					} else if (token.value == "active") {
+						filter = ActiveFilter;
+					} else if (token.value == "discarded") {
+						filter = DiscardedFilter;
+					} else if (token.value == "frozen") {
+						filter = FrozenFilter;
 					}
 
 					if (filter && token.type == SearchType.not) {
