@@ -11,7 +11,7 @@
   "author": "Jesse G Donat <donatj@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@types/chrome": "^0.1.27"
+    "@types/chrome": "^0.1.32"
   },
   "devDependencies": {
     "@rollup/plugin-node-resolve": "^16.0.3",
